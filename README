@@ -9,8 +9,8 @@ https://www.youtube.com/playlist?list=PLblA84xge2_zwxh3XJqy6UVxS60YdusY8
 
 To use Bootstrap simply,
 
-<code>npm install bootstrap --save-dev</code>
+```npm install bootstrap --save-dev</code>```
 
 Then on index.scss import bootstrap like this
 
-<code>@import "~bootstrap/scss/bootstrap";</code>
+```@import "~bootstrap/scss/bootstrap";```
