@@ -1,5 +1,13 @@
-$mainColour: yellow;
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Mono&display=swap');
+
+$mainColour: white;
 
 body {
 	background-color: $mainColour;
+	text-align: center;
+	font-family: 'IBM Plex Mono', monospace;
+}
+
+.image {
+	width: 500px;
 }
