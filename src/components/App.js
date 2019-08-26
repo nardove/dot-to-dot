@@ -1,15 +1,11 @@
 import React, {Component} from 'react';
-import image from '../assets/image.jpg';
+import MainView from './MainView';
 
-class App extends Component {
+
+export default class App extends Component {
 	render() {
 		return (
-			<div>
-				<h1>Hello!</h1>
-				<img className='image' src={image} />
-			</div>
+			<MainView />
 		);
 	}
 }
-
-export default App;
