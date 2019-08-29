@@ -1,7 +1,7 @@
 {
-  "name": "nardove-site",
+  "name": "dot-to-dot",
   "version": "1.0.0",
-  "description": "My personal website",
+  "description": "Experimental web app to draw dot-to-dot images",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js --open --hot",
