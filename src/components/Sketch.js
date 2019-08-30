@@ -1,32 +1,45 @@
+// Experimental web app to create dot-to-dot images
+// Using Matterjs, Paperjs and Reactjs as main libraries
+// TODO:
+// * User to upload an image as reference
+// * Been able to scale and rotate the image
+// * Adding dots with mouse clicks
+// * Add ability to undo or erase dots
+// * Add export to PDF or print the resulting image
+import React, {Fragment} from 'react';
 import paper from 'paper';
 import Matter from 'matter-js';
 
 
 export default function Sketch() {
-	let engine, Engine, World, Bodies, Render;
-	
+	// Matterjs physics variables
+	let engine,
+		Engine,
+		World,
+		Bodies,
+		Render;
+
+	// Paperjs render variables
+	let size;
+
+	let showRender = false;
+
+
 	window.onload = function() {
 		paper.install(window);
 		paper.setup('paper-canvas');
 		
-		let size = view.size;
+		// Stores window size width and height
+		size = view.size;
 
+		// Initial engine setup
 		Engine = Matter.Engine;
 		World = Matter.World;
 		Bodies = Matter.Bodies;
 		Render = Matter.Render;
 		engine = Engine.create();
 
-		for (let i=0; i < 10; i++) {
-			let posX = size.width / 2 + Math.random() * 400 - 200,
-				posY = Math.random() * 100,
-				sizeW = Math.random() * 80 + 20,
-				sizeH = Math.random() * 80 + 20,
-				radius = Math.random() * 80 + 15;
-
-			addBox(posX, posY, sizeW, sizeH, false);
-			addCircle(posX, posY, radius, false);
-		}
+		// Draw walls
 		// ground
 		addBox(size.width / 2, size.height - 10, size.width, 100, true);
 		// left wall
@@ -34,8 +47,8 @@ export default function Sketch() {
 		// right wall
 		addBox(size.width - 25, size.height / 2, 50, size.height, true);
 
-		let showRender = true;
-		if (!showRender) {
+		// Shows engine debug render
+		if (showRender) {
 			var render = Render.create({
 				element: document.getElementById('render-container'),
 				canvas: document.getElementById('matter-canvas'),
@@ -53,6 +66,8 @@ export default function Sketch() {
 			});
 		}
 
+
+		// Kicks off animation loop
 		view.onFrame = draw;
 		Engine.run(engine);
 	}
@@ -69,6 +84,7 @@ export default function Sketch() {
 
 	function attachBodyShape(body, shape) {
 		body.shape = shape;
+		body.friction = 0;
 		World.add(engine.world, body);
 	}
 
@@ -92,5 +108,22 @@ export default function Sketch() {
 		attachBodyShape(body, shape);
 	}
 
-	return null;
+	function addDot(event) {
+		const x = event.clientX,
+			  y = event.clientY,
+			  r = Math.random() * 10 + 5;
+		addCircle(x, y, r, false);
+	}
+
+	return (
+		<Fragment>
+			{
+				showRender
+				? <canvas id='matter-canvas' resize='true' />
+				: null 
+			}
+			
+			<canvas id='paper-canvas' resize='true' onClick={addDot} />
+		</Fragment>
+	);
 }

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import Sketch from './Sketch';
 
 export default class MainView extends Component {
@@ -9,14 +9,10 @@ export default class MainView extends Component {
 
 	render() {
 		return(
-			<div>
-			<div id='render-container'>
-				<canvas id='matter-canvas' resize='true' />
-			</div>
-				<canvas id='paper-canvas' resize='true' />
+			<Fragment>
 				<Sketch />
 				<h1>Main View</h1>
-			</div>
+			</Fragment>
 		);
 	}
 }
