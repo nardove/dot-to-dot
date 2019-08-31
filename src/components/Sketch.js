@@ -18,6 +18,7 @@ export default function Sketch() {
 
 	let dots = [];
 	let dot_id = 0;
+	let points = [];
 
 	window.onload = function() {
 		// Paperjs initialization settings
@@ -44,17 +45,25 @@ export default function Sketch() {
 	function addDot(event) {
 		// Creates a new point at mouse position
 		const position = new Point(event.clientX, event.clientY);
-		// Creates a new colour that auto change its tint
-		const color = new Color('cyan');
-		color.hue += dot_id;
-		// Creates a new Dot object and store its in an array
-		const dot = new Dot(dot_id, position, color);
-		dots.push(dot);
-		// Increment dot id number
-		dot_id++;
-
-		// Add points to the path line
-		path.add(position);
+		
+		// Check if mouse position is too close to the other dots
+		if (points.every(point => point.getDistance(position) >= 10)) {
+			// Creates a new colour that auto change its tint
+			const color = new Color('cyan');
+			color.hue += dot_id;
+			// Creates a new Dot object and store its in an array
+			const dot = new Dot(dot_id, position, color);
+			dots.push(dot);
+			// Increment dot id number
+			dot_id++;
+			
+			// Add points to the path line
+			path.add(position);
+			points.push(position);
+		}
+		else {
+			console.log("Too close to the previous point");
+		}
 	}
 
 
