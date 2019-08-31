@@ -12,6 +12,7 @@ import Dot from './Dot';
 
 
 export default function Sketch() {
+
 	// Paperjs render variables
 	let path;
 	let showPath = true;
@@ -37,7 +38,7 @@ export default function Sketch() {
 		path.visible = showPath;
 
 		// Renders all dots
-		for (let dot of dots) dot.render();
+		// for (let dot of dots) dot.render();
 	}
 	
 

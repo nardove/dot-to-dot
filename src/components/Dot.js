@@ -1,4 +1,3 @@
-
 export default class Dot {
 	constructor(id, position, color) {
 		this.id = new PointText({
@@ -22,7 +21,7 @@ export default class Dot {
 	}
 
 	render() {
-		// this.id.position = this.position.subtract(7);
+		// this.id.position = this.body.position;
 		// this.line.segments[0].point = this.constraint.pointA;
 		// this.line.segments[1].point = this.body.position;
 	}
