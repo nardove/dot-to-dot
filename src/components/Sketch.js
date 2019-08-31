@@ -12,7 +12,6 @@ import Dot from './Dot';
 
 
 export default function Sketch() {
-
 	// Paperjs render variables
 	let path;
 	let showPath = true;
