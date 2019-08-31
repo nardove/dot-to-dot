@@ -11,7 +11,9 @@ export default class MainView extends Component {
 		return(
 			<Fragment>
 				<Sketch />
-				<h1>Main View</h1>
+				<h1>dot&#8212;to&#8212;dot</h1>
+				{/* <h2>&#8226;&#8212;&#8226;&#8212;&#8226;</h2> */}
+				<h3>web application to create your own dot-to-dot drawings</h3>
 			</Fragment>
 		);
 	}

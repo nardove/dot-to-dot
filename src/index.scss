@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Dosis:200');
 
 $mainColour: white;
 
@@ -9,7 +9,8 @@ html, body {
 	overflow: hidden;
 	background-color: $mainColour;
 	text-align: center;
-	font-family: 'IBM Plex Mono', monospace;
+	font-family: 'Dosis', sans-serif;
+	// font-weight: lighter;
 	color: black;
 }
 
@@ -27,7 +28,7 @@ canvas[resize] {
 	width: 500px;
 }
 
-h1 {
+h1, h3 {
 	margin: 0px;
 	padding: 0px;
 }
