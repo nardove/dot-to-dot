@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?> <!-- Created with Vectornator for iOS (http://vectornator.io/) --><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" xmlns:vectornator="http://vectornator.io" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" viewBox="0 0 120 130">
+<metadata>
+<vectornator:setting key="DisplayWhiteBackground" value="1"/>
+<vectornator:setting key="RulersVisible" value="1"/>
+<vectornator:setting key="SnapToEdges" value="0"/>
+<vectornator:setting key="Units" value="Pixels"/>
+<vectornator:setting key="DynamicGuides" value="1"/>
+<vectornator:setting key="SnapToPoints" value="0"/>
+<vectornator:setting key="SnapToGrid" value="0"/>
+<vectornator:setting key="SnapToGuides" value="1"/>
+<vectornator:setting key="ShowGrid" value="0"/>
+<vectornator:setting key="GridSpacing" value="72"/>
+</metadata>
+<defs/>
+<g id="Layer 1" vectornator:layerName="Layer 1">
+<g opacity="1">
+<path stroke="#939393" stroke-width="4.9" d="M84.6218+16.149L64.109+112.823L19.149+96.5247L100.92+68.5604" fill="none" stroke-linecap="round" opacity="1" stroke-linejoin="round"/>
+<path d="M76.521+15.2709C77.006+10.7969+81.026+7.56316+85.5+8.04815C89.974+8.53314+93.2077+12.5532+92.7227+17.0272C92.2377+21.5012+88.2177+24.7349+83.7437+24.2499C79.2697+23.7649+76.036+19.7448+76.521+15.2709Z" opacity="1" fill="#000000"/>
+<path d="M56.0081+111.945C56.4931+107.471+60.5131+104.237+64.9871+104.722C69.4611+105.207+72.6948+109.227+72.2098+113.701C71.7248+118.175+67.7048+121.409+63.2308+120.924C58.7568+120.439+55.5231+116.419+56.0081+111.945Z" opacity="1" fill="#000000"/>
+<path d="M11.0482+95.6465C11.5331+91.1725+15.5532+87.9388+20.0272+88.4238C24.5012+88.9088+27.7349+92.9289+27.2499+97.4028C26.7649+101.877+22.7448+105.111+18.2709+104.626C13.7969+104.141+10.5632+100.121+11.0482+95.6465Z" opacity="1" fill="#000000"/>
+<path d="M92.819+67.6822C93.304+63.2082+97.324+59.9745+101.798+60.4595C106.272+60.9445+109.506+64.9646+109.021+69.4385C108.536+73.9125+104.516+77.1462+100.042+76.6612C95.5677+76.1763+92.334+72.1562+92.819+67.6822Z" opacity="1" fill="#000000"/>
+</g>
+</g>
+</svg>

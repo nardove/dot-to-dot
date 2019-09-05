@@ -1,6 +1,10 @@
-@import url('https://fonts.googleapis.com/css?family=Dosis:200');
+@import "~bootstrap/scss/bootstrap";
+// @import url('https://fonts.googleapis.com/css?family=Dosis:200');
+// @import url('https://fonts.googleapis.com/css?family=Quicksand:300&display=swap');
 
 $mainColour: white;
+$iconSize: 60px;
+
 
 html, body {
 	width: 100%;
@@ -9,8 +13,7 @@ html, body {
 	overflow: hidden;
 	background-color: $mainColour;
 	text-align: center;
-	font-family: 'Dosis', sans-serif;
-	// font-weight: lighter;
+	font-family: 'Quicksand', sans-serif;
 	color: black;
 }
 
@@ -24,11 +27,37 @@ canvas[resize] {
 	height: 100%;
 }
 
-.image {
-	width: 500px;
+.header {
+	margin-top: 10px;
+	
+	img {
+		margin-left: 0px;
+		margin-right: 0px;
+		padding-left: 0px;
+		padding-right: 0px;
+		width: 70px;
+	}
+
+	div	{
+		margin-left: 0px;
+		margin-right: 0px;
+		padding-left: 0px;
+		padding-right: 0px;
+	}
+
+	h1, h5 {
+		margin: 0px;
+		padding: 0px;
+	}
 }
 
-h1, h3 {
-	margin: 0px;
-	padding: 0px;
+
+.path-line-controls {
+	margin-bottom: 20px;
+
+	img {
+		width: $iconSize;
+		padding-left: 10px;
+		padding-right: 10px;
+	}
 }

@@ -1,19 +1,43 @@
 import React, {Component, Fragment} from 'react';
+import Header from './Header';
 import Sketch from './Sketch';
+import PathControls from './PathControls';
+import {ViewProvider, ViewContext} from './ViewContext';
+
 
 export default class MainView extends Component {
-
-	componentDidMount() {
-		// ßconst canvas = document.getElementById('paper-canvas');
-	}
-
 	render() {
 		return(
 			<Fragment>
-				<Sketch />
-				<h1>dot&#8212;to&#8212;dot</h1>
-				{/* <h2>&#8226;&#8212;&#8226;&#8212;&#8226;</h2> */}
-				<h3>web application to create your own dot-to-dot drawings</h3>
+				<canvas id='paper-canvas' resize='true' />
+
+				<ViewProvider>
+					<ViewContext.Consumer>
+						{({
+							isAddDotsEnabled,
+							isEraseDotsEnabled,
+							isPathVisible,
+							toogleIsAddDotsEnabled,
+							toogleIsEraseDotsEnabled,
+							tooglePathVisible
+						}) => (
+							<Fragment>
+								<Sketch
+									isAddDotsEnabled={isAddDotsEnabled}
+									isEraseDotsEnabled={isEraseDotsEnabled}
+									isPathVisible={isPathVisible}
+								/>
+								<PathControls
+									toogleIsAddDotsEnabled={toogleIsAddDotsEnabled}
+									toogleIsEraseDotsEnabled={toogleIsEraseDotsEnabled}
+									tooglePathVisible={tooglePathVisible}
+								/>
+							</Fragment>
+						)}
+					</ViewContext.Consumer>
+				</ViewProvider>
+				
+				<Header />
 			</Fragment>
 		);
 	}

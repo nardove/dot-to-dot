@@ -2,24 +2,24 @@
 // Using Paperjs and Reactjs as main libraries
 // TODO:
 // * User to upload an image as reference
-// * Been able to scale and rotate the image
+// * Been able to adjust the image
 // * Adding dots with mouse clicks
 // * Add ability to undo or erase dots
 // * Add export to PDF or print the resulting image
-import React, {Fragment} from 'react';
+import React, {Fragment, useState, useEffect} from 'react';
 import paper from 'paper';
 import Dot from './Dot';
 
 
-export default function Sketch() {
-	// Paperjs render variables
-	let path;
-	let showPath = true;
+// Paperjs render variables
+let path;
+let dots = [];
+let dot_id = 0;
+let points = [];
 
-	let dots = [];
-	let dot_id = 0;
-	let points = [];
 
+export default function Sketch(props) {
+	
 	window.onload = function() {
 		// Paperjs initialization settings
 		paper.install(window);
@@ -28,26 +28,29 @@ export default function Sketch() {
 		// Creates a new path line that shows the connected dots
 		path = new Path();
 		path.strokeColor = 'black';
+		path.visible = props.isPathVisible;
 
 		// Kicks off animation loop
-		view.onFrame = draw;
-	}
+		// view.onFrame = draw;
 
-	function draw(event) {
-		// Render path line, toggles by the click of a button
-		path.visible = showPath;
-
-		// Renders all dots
-		// for (let dot of dots) dot.render();
+		view.onMouseDown = function(event) {
+			addDot(event.point);
+		}
 	}
 	
+	useEffect(function() {
+		if (path != undefined) { path.visible = props.isPathVisible; }
+		console.log(path, props.isPathVisible);
+	});
 
-	function addDot(event) {
+	// function draw(event) {}
+
+	function addDot(point) {
 		// Creates a new point at mouse position
-		const position = new Point(event.clientX, event.clientY);
+		const position = new Point(point.x,point.y);
 		
 		// Check if mouse position is too close to the other dots
-		if (points.every(point => point.getDistance(position) >= 10)) {
+		if (path.segments.every(segment => segment.point.getDistance(position) >= 10)) {
 			// Creates a new colour that auto change its tint
 			const color = new Color('cyan');
 			color.hue += dot_id;
@@ -66,10 +69,11 @@ export default function Sketch() {
 		}
 	}
 
-
-	return (
-		<Fragment>
-			<canvas id='paper-canvas' resize='true' onClick={addDot} />
-		</Fragment>
-	);
+		
+	// return (
+	// 	<Fragment>
+	// 		<canvas id='paper-canvas' resize='true' onClick={addDot} />
+	// 	</Fragment>
+	// );
+	return null;
 }
