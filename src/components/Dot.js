@@ -20,6 +20,11 @@ export default class Dot {
 				});
 	}
 
+	remove() {
+		this.id.remove();
+		this.shape.remove();
+	}
+
 	render() {
 		// this.id.position = this.body.position;
 		// this.line.segments[0].point = this.constraint.pointA;

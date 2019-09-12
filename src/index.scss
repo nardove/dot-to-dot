@@ -1,6 +1,6 @@
 @import "~bootstrap/scss/bootstrap";
 // @import url('https://fonts.googleapis.com/css?family=Dosis:200');
-// @import url('https://fonts.googleapis.com/css?family=Quicksand:300&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Quicksand:300&display=swap');
 
 $mainColour: white;
 $iconSize: 60px;
@@ -52,12 +52,14 @@ canvas[resize] {
 }
 
 
-.path-line-controls {
+.sketch-controls {
 	margin-bottom: 20px;
 
 	img {
 		width: $iconSize;
+		margin-right: 10px;
 		padding-left: 10px;
 		padding-right: 10px;
+		cursor: pointer;
 	}
 }
