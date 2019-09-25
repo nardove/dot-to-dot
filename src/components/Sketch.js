@@ -10,6 +10,8 @@ import React, {Component, Fragment} from 'react';
 import paper from 'paper';
 import Dot from './Dot';
 import SketchControls from './SketchControls';
+import IOControls from './IOControls';
+
 
 export default class Sketch extends Component {
 	constructor(props) {
@@ -17,14 +19,16 @@ export default class Sketch extends Component {
 		this.state = {
 			addDotEnable: true,
 			eraseDotEnable: false,
-			showPath: true
+			showPath: false,
 		};
-		
+
 		// Paperjs render variables
 		this.path;
 		this.dots = [];
 		this.dot_id = 0;
 		this.points = [];
+		this.group = null; // will use this to hold all the drawing for easy window render and export to file
+		this.raster = null;
 
 		// SketchControl functions
 		this.handleMouseClick = this.handleMouseClick.bind(this);
@@ -37,6 +41,11 @@ export default class Sketch extends Component {
 		this.eraseDot = this.eraseDot.bind(this);
 		this.undoDot = this.undoDot.bind(this);
 		this.updateDotNumbers = this.updateDotNumbers.bind(this);
+
+		this.handleWindowResize = this.handleWindowResize.bind(this);
+
+		// IOControl functions
+		this.addImageToRaster = this.addImageToRaster.bind(this);
 	}
 	
 	componentDidMount() {
@@ -45,41 +54,59 @@ export default class Sketch extends Component {
 		paper.setup('paper-canvas');
 		// console.log("Paper loaded");	
 		
+		this.group = new Group();
+		const offset = {x: 100, y: 110};
+		// this.group.position = new Point(window.innerWidth / 2, window.innerHeight / 2);
+		const rect = new Shape.Rectangle(offset.x, offset.y, window.innerWidth - (offset.x * 2), window.innerHeight - (offset.y * 2 - 20));
+		rect.strokeColor = 'grey';
+		rect.fillColor = 'white';
+		// rect.selected = true;
+		this.group.addChild(rect);
+
+		// Adds Mouse event to group 
+		// allows for a better control as of where the user draw
+		this.group.onMouseDown = (event) => {
+			this.handleMouseClick(event);
+		}
+
 		// Creates a new path line that shows the connected dots
 		this.path = new Path();
 		this.path.strokeColor = 'black';
 		this.path.visible = this.state.showPath;
-		// this.path.selected = true;
-		
-		// Kicks off animation loop
-		// view.onFrame = draw;
+		// this.togglePathVisibility();
+		this.group.addChild(this.path);
+
+		window.addEventListener('resize', this.handleWindowResize);
+	}
+	
+	handleWindowResize() {
+		const centreAlign = new Point(window.innerWidth / 2, window.innerHeight / 2);
+		this.group.position = centreAlign;
 	}
 
 	togglePathVisibility() {
-		this.setState({showPath: !this.state.showPath});
-		// console.log("show path:", this.state.showPath);
-		this.path.visible = this.state.showPath;
+		this.setState({showPath: !this.state.showPath}, () => {
+			this.path.visible = this.state.showPath;
+		});
 	}
 
 	toggleAddDot() {
 		this.setState({addDotEnable: !this.state.addDotEnable});
 		if (this.state.eraseDotEnable) {
-			this.toggleEraseDot();		
+			this.toggleEraseDot();
 		}
 	}
 
 	toggleEraseDot() {
 		this.setState({eraseDotEnable: !this.state.eraseDotEnable});
 		if (this.state.addDotEnable) {
-			this.toggleAddDot();		
+			this.toggleAddDot();
 		}
 	}
 
 	handleUndoDot() {
 		this.undoDot();
 	}
-
-	// function draw(event) {}
 
 	handleMouseClick(event) {
 		// console.log("Add dot enable:", this.state.addDotEnable);
@@ -97,15 +124,15 @@ export default class Sketch extends Component {
 
 	addDot(event) {
 		// Creates a new point at mouse position
-		const position = new Point(event.clientX, event.clientY);
+		const position = event.point;
 		
 		// Check if mouse position is too close to the other dots
 		if (this.path.segments.every(segment => segment.point.getDistance(position) >= 10)) {
 			// Creates a new colour that auto change its tint
-			const color = new Color('red');
-			color.hue -= this.dot_id;
+			const color = new Color('yellow');
+			color.hue -= this.dot_id + 50;
 			// Creates a new Dot object and store its in an array
-			const dot = new Dot(this.dot_id, position, color);
+			const dot = new Dot(this.dot_id, position, color, this.group);
 			this.dots.push(dot);
 			// Increment dot id number
 			this.dot_id++;
@@ -121,21 +148,19 @@ export default class Sketch extends Component {
 	}
 
 	eraseDot(event) {
-		const point = new Point(event.clientX, event.clientY);
-		const hitOptions = {
-			segments: true,
-			tolerance: 20
-		};
-
-		const hitResult = this.path.hitTest(point, hitOptions);
-		if (!hitResult) return;
-		if (hitResult.type == 'segment') {
-			const dotIndex = hitResult.segment.index;
-			hitResult.segment.remove();
-			this.dots[dotIndex].remove();
-			this.dots.splice(dotIndex, 1);
-			this.updateDotNumbers();
-		}
+		const point = event.point;
+		this.dots.some(dot => {
+			const hit = dot.shape.hitTest(point, {fill: true, tolerance: 5});
+			if (hit != null) {
+				const dotIndex = parseInt(dot.id.content);
+				this.path.removeSegment(dotIndex);
+				this.dots[dotIndex].remove();
+				this.dots.splice(dotIndex, 1);
+				this.updateDotNumbers();
+				// console.log("hit:", dotIndex, this.path.segments.length);
+				return;
+			}
+		});
 	}
 
 	updateDotNumbers() {
@@ -153,19 +178,35 @@ export default class Sketch extends Component {
 			removedDot.remove();
 			this.dot_id--;
 		}
-		console.log("Undo last dot", lastPointIndex);
+		// console.log("Undo last dot", lastPointIndex);
 	}
+
+
+	addImageToRaster() {
+		console.log('add image to raster');
+		this.raster = new Raster('paper-img');
+		this.raster.position = new Point(window.innerWidth / 2, window.innerHeight / 2);
+		this.raster.opacity = 0.1;
+		this.group.addChild(this.raster);
+	}
+
 
 	render() {
 		return (
 			<Fragment>
-				<canvas id='paper-canvas' resize='true' onClick={this.handleMouseClick} />
+				<img id='paper-img' />
+				<canvas id='paper-canvas' resize='true' />
 				<SketchControls
+					addDotEnableState={this.state.addDotEnable}
+					eraseDotEnableState={this.state.eraseDotEnable}
+					showPathState={this.state.showPath}
+
 					toggleAddDot={this.toggleAddDot}
 					handleUndoDot={this.handleUndoDot}
 					toggleEraseDot={this.toggleEraseDot}
 					togglePathVisibility={this.togglePathVisibility}
 				/>
+				<IOControls addImageToRaster={this.addImageToRaster} />
 			</Fragment>
 		);
 	}

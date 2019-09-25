@@ -28,8 +28,9 @@ canvas[resize] {
 }
 
 .header {
-	margin-top: 10px;
-	
+	padding-top: 10px;
+	position: absolute;
+
 	img {
 		margin-left: 0px;
 		margin-right: 0px;
@@ -51,15 +52,31 @@ canvas[resize] {
 	}
 }
 
-
 .sketch-controls {
-	margin-bottom: 20px;
+	padding-bottom: 20px;
+}
 
-	img {
-		width: $iconSize;
-		margin-right: 10px;
-		padding-left: 10px;
-		padding-right: 10px;
-		cursor: pointer;
+.img-btn {
+	width: $iconSize;
+	margin-right: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	cursor: pointer;
+}
+
+.io-controls {
+	padding-top: 20px;
+	// position: absolute;
+	height: 150px;
+
+	input {
+		width: 280px;
+		background: white;
 	}
+}
+
+#paper-img {
+	width: 100px;
+	position: absolute;
+	display: none;
 }
