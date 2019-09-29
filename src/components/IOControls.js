@@ -4,8 +4,10 @@ import imgIcon from '../assets/gui-icons/glyphicons-basic-38-picture.svg';
 import settingsIcon from '../assets/gui-icons/glyphicons-basic-138-cogwheels.svg';
 import downloadIcon from '../assets/gui-icons/glyphicons-basic-199-save.svg';
 import aboutIcon from '../assets/gui-icons/glyphicons-basic-636-circle-info.svg';
-import FileLoader from './FileLoader';
 import TweenLite from 'gsap/TweenLite';
+import FileLoaderPanel from './FileLoaderPanel';
+import ImageAdjustmentPanel from './ImageAdjustmentPanel';
+
 
 
 export default class IOControls extends Component {
@@ -14,22 +16,25 @@ export default class IOControls extends Component {
 		this.state = {
 			showFileLoader: false
 		};
+
 		this.toggleFileLoader = this.toggleFileLoader.bind(this);
 		this.imageLoadComplete = this.imageLoadComplete.bind(this);
+		this.fileLoaderRef = React.createRef();
 	}
 
 
 	toggleFileLoader(event) {
 		this.setState({showFileLoader: !this.state.showFileLoader}, () => {
-			if (this.state.showFileLoader) {
-				TweenLite.to('#fileloader-div', 0.3, {opacity:1});
+			if (this.state.showFileLoader === true) {
+				TweenLite.to('#fileloader-div', 0.3, {opacity:1, display:''});
 			}
 			else {
-				TweenLite.to('#fileloader-div', 0.3, {opacity:0, onComplete:() => {
+				TweenLite.to('#fileloader-div', 0.3, {opacity:0, display:'none', onComplete:() => {
 					console.log('file loader hide complete');
 				}});
 			}
 		});
+		
 		// console.log(event, event.pageX, event.pageY);
 	}
 
@@ -56,10 +61,14 @@ export default class IOControls extends Component {
 						<img className='img-btn' src={aboutIcon} alt='About' title='About' />
 					</div>
 				</div>
-				{/* <div id='fileloader-div' className='row justify-content-end' > */}
-				<div id='fileloader-div' className='row justify-content-end' style={{opacity:0}}>
+				<div className='row justify-content-end' style={{display:'none'}} ref={this.fileLoaderRef}>
+					<div className='col-auto' onMouseLeave={this.toggleFileLoader}>
+						<FileLoaderPanel imageLoaded={this.imageLoadComplete} />
+					</div>
+				</div>
+				<div className='row' style={{display:''}}>
 					<div className='col-auto'>
-						<FileLoader imageLoaded={this.imageLoadComplete} />
+						<ImageAdjustmentPanel />
 					</div>
 				</div>
 			</div>

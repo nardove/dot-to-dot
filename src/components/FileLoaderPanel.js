@@ -2,7 +2,7 @@ import React, {Component, Fragment, createRef} from 'react';
 import TweenLite from 'gsap/TweenLite';
 
 
-export default class FileLoader extends Component {
+export default class FileLoaderPanel extends Component {
 	constructor(props) {
 		super(props);
 
@@ -25,14 +25,12 @@ export default class FileLoader extends Component {
 			};
 			
 			reader.readAsDataURL(loadedImage);
-			
 		} else {
 			alert('The File APIs are not fully supported in this browser.');
 		}
 	}
 
 	render() {
-		
 		return(
 			<Fragment>
 				{/* <div ref={this.inputRef}> */}

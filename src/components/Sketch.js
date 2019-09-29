@@ -22,7 +22,7 @@ export default class Sketch extends Component {
 			showPath: false,
 		};
 
-		// Paperjs render variables
+		// Paperjs objects
 		this.path;
 		this.dots = [];
 		this.dot_id = 0;
@@ -31,21 +31,21 @@ export default class Sketch extends Component {
 		this.raster = null;
 
 		// SketchControl functions
-		this.handleMouseClick = this.handleMouseClick.bind(this);
 		this.togglePathVisibility = this.togglePathVisibility.bind(this);
 		this.toggleAddDot = this.toggleAddDot.bind(this);
 		this.toggleEraseDot = this.toggleEraseDot.bind(this);
 		this.handleUndoDot = this.handleUndoDot.bind(this);
-
 		this.addDot = this.addDot.bind(this);
 		this.eraseDot = this.eraseDot.bind(this);
 		this.undoDot = this.undoDot.bind(this);
 		this.updateDotNumbers = this.updateDotNumbers.bind(this);
-
-		this.handleWindowResize = this.handleWindowResize.bind(this);
-
+		
 		// IOControl functions
 		this.addImageToRaster = this.addImageToRaster.bind(this);
+		
+		// General functions
+		this.handleMouseClick = this.handleMouseClick.bind(this);
+		this.handleWindowResize = this.handleWindowResize.bind(this);
 	}
 	
 	componentDidMount() {
@@ -120,6 +120,7 @@ export default class Sketch extends Component {
 		else {
 			console.log("neither add or erase dots are enabled");
 		}
+
 	}
 
 	addDot(event) {
