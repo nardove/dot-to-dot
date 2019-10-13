@@ -195,7 +195,7 @@ export default class Sketch extends Component {
 	render() {
 		return (
 			<Fragment>
-				<img id='paper-img' />
+				<img id='paper-img' title='loaded image' />
 				<canvas id='paper-canvas' resize='true' />
 				<SketchControls
 					addDotEnableState={this.state.addDotEnable}

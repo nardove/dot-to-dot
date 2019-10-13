@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css?family=Quicksand:300&display=swap');
 
 $mainColour: white;
-$iconSize: 60px;
+$iconSize: 50px;
 
 
 html, body {
@@ -36,7 +36,7 @@ canvas[resize] {
 		margin-right: 0px;
 		padding-left: 0px;
 		padding-right: 0px;
-		width: 70px;
+		width: $iconSize;
 	}
 
 	div	{

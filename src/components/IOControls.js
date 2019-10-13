@@ -26,10 +26,10 @@ export default class IOControls extends Component {
 	toggleFileLoader(event) {
 		this.setState({showFileLoader: !this.state.showFileLoader}, () => {
 			if (this.state.showFileLoader === true) {
-				TweenLite.to('#fileloader-div', 0.3, {opacity:1, display:''});
+				TweenLite.to(this.fileLoaderRef, 0.3, {opacity:1, display:''});
 			}
 			else {
-				TweenLite.to('#fileloader-div', 0.3, {opacity:0, display:'none', onComplete:() => {
+				TweenLite.to(this.fileLoaderRef, 0.3, {opacity:0, display:'none', onComplete:() => {
 					console.log('file loader hide complete');
 				}});
 			}
@@ -61,12 +61,12 @@ export default class IOControls extends Component {
 						<img className='img-btn' src={aboutIcon} alt='About' title='About' />
 					</div>
 				</div>
-				<div className='row justify-content-end' style={{display:'none'}} ref={this.fileLoaderRef}>
+				<div className='row justify-content-end' style={{display:'none'}} ref={element => this.fileLoaderRef = element}>
 					<div className='col-auto' onMouseLeave={this.toggleFileLoader}>
 						<FileLoaderPanel imageLoaded={this.imageLoadComplete} />
 					</div>
 				</div>
-				<div className='row' style={{display:''}}>
+				<div className='row' style={{display:'none'}}>
 					<div className='col-auto'>
 						<ImageAdjustmentPanel />
 					</div>
