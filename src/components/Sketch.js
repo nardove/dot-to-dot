@@ -6,12 +6,11 @@
 // * Adding dots with mouse clicks
 // * Add ability to undo or erase dots
 // * Add export to PDF or print the resulting image
-import React, {Component, Fragment} from 'react';
+import React, { Component, Fragment } from 'react';
 import paper from 'paper';
 import Dot from './Dot';
 import SketchControls from './SketchControls';
 import IOControls from './IOControls';
-
 
 export default class Sketch extends Component {
 	constructor(props) {
@@ -19,7 +18,7 @@ export default class Sketch extends Component {
 		this.state = {
 			addDotEnable: true,
 			eraseDotEnable: false,
-			showPath: false,
+			showPath: false
 		};
 
 		// Paperjs objects
@@ -39,35 +38,43 @@ export default class Sketch extends Component {
 		this.eraseDot = this.eraseDot.bind(this);
 		this.undoDot = this.undoDot.bind(this);
 		this.updateDotNumbers = this.updateDotNumbers.bind(this);
-		
+
 		// IOControl functions
 		this.addImageToRaster = this.addImageToRaster.bind(this);
-		
+
 		// General functions
 		this.handleMouseClick = this.handleMouseClick.bind(this);
 		this.handleWindowResize = this.handleWindowResize.bind(this);
 	}
-	
+
 	componentDidMount() {
 		// Paperjs initialization settings
 		paper.install(window);
 		paper.setup('paper-canvas');
-		// console.log("Paper loaded");	
-		
+		// console.log("Paper loaded");
+
 		this.group = new Group();
-		const offset = {x: 100, y: 110};
-		// this.group.position = new Point(window.innerWidth / 2, window.innerHeight / 2);
-		const rect = new Shape.Rectangle(offset.x, offset.y, window.innerWidth - (offset.x * 2), window.innerHeight - (offset.y * 2 - 20));
+		const offset = { x: 0, y: 110 };
+		const rect = new Shape.Rectangle(
+			offset.x,
+			offset.y,
+			800, // check window.innerWidth
+			window.innerHeight > 800 ? 700 : window.innerHeight - offset.y
+		);
 		rect.strokeColor = 'grey';
 		rect.fillColor = 'white';
 		// rect.selected = true;
+		this.group.position = new Point(
+			window.innerWidth / 2,
+			window.innerHeight / 2
+		);
 		this.group.addChild(rect);
 
-		// Adds Mouse event to group 
+		// Adds Mouse event to group
 		// allows for a better control as of where the user draw
-		this.group.onMouseDown = (event) => {
+		this.group.onMouseDown = event => {
 			this.handleMouseClick(event);
-		}
+		};
 
 		// Creates a new path line that shows the connected dots
 		this.path = new Path();
@@ -76,29 +83,33 @@ export default class Sketch extends Component {
 		// this.togglePathVisibility();
 		this.group.addChild(this.path);
 
-		window.addEventListener('resize', this.handleWindowResize);
+		// window.addEventListener('resize', this.handleWindowResize);
 	}
-	
+
+	// Setting canvas max-width breaks thes resize eventlistener and makes the method redundant
 	handleWindowResize() {
-		const centreAlign = new Point(window.innerWidth / 2, window.innerHeight / 2);
+		const centreAlign = new Point(
+			window.innerWidth / 2,
+			window.innerHeight / 2
+		);
 		this.group.position = centreAlign;
 	}
 
 	togglePathVisibility() {
-		this.setState({showPath: !this.state.showPath}, () => {
+		this.setState({ showPath: !this.state.showPath }, () => {
 			this.path.visible = this.state.showPath;
 		});
 	}
 
 	toggleAddDot() {
-		this.setState({addDotEnable: !this.state.addDotEnable});
+		this.setState({ addDotEnable: !this.state.addDotEnable });
 		if (this.state.eraseDotEnable) {
 			this.toggleEraseDot();
 		}
 	}
 
 	toggleEraseDot() {
-		this.setState({eraseDotEnable: !this.state.eraseDotEnable});
+		this.setState({ eraseDotEnable: !this.state.eraseDotEnable });
 		if (this.state.addDotEnable) {
 			this.toggleAddDot();
 		}
@@ -113,22 +124,23 @@ export default class Sketch extends Component {
 		// console.log("Erase dot enable:", this.state.eraseDotEnable);
 		if (this.state.addDotEnable) {
 			this.addDot(event);
-		}
-		else if (this.state.eraseDotEnable) {
+		} else if (this.state.eraseDotEnable) {
 			this.eraseDot(event);
+		} else {
+			console.log('neither add or erase dots are enabled');
 		}
-		else {
-			console.log("neither add or erase dots are enabled");
-		}
-
 	}
 
 	addDot(event) {
 		// Creates a new point at mouse position
 		const position = event.point;
-		
+
 		// Check if mouse position is too close to the other dots
-		if (this.path.segments.every(segment => segment.point.getDistance(position) >= 10)) {
+		if (
+			this.path.segments.every(
+				segment => segment.point.getDistance(position) >= 10
+			)
+		) {
 			// Creates a new colour that auto change its tint
 			const color = new Color('yellow');
 			color.hue -= this.dot_id + 50;
@@ -137,21 +149,20 @@ export default class Sketch extends Component {
 			this.dots.push(dot);
 			// Increment dot id number
 			this.dot_id++;
-			
+
 			// Add points to the path line
 			this.path.add(position);
 			this.points.push(position);
-		}
-		else {
+		} else {
 			// Display a message to notify the issue
-			console.log("Too close to the previous point");
+			console.log('Too close to the previous point');
 		}
 	}
 
 	eraseDot(event) {
 		const point = event.point;
 		this.dots.some(dot => {
-			const hit = dot.shape.hitTest(point, {fill: true, tolerance: 5});
+			const hit = dot.shape.hitTest(point, { fill: true, tolerance: 5 });
 			if (hit != null) {
 				const dotIndex = parseInt(dot.id.content);
 				this.path.removeSegment(dotIndex);
@@ -182,26 +193,34 @@ export default class Sketch extends Component {
 		// console.log("Undo last dot", lastPointIndex);
 	}
 
-
 	addImageToRaster() {
 		console.log('add image to raster');
+		// Check if there is an image already loaded
+		// if so clears the raster addDotEnableState,
+		if (this.raster !== null) {
+			this.raster.clear();
+		}
+		// otherwise adds the new loaded image
 		this.raster = new Raster('paper-img');
-		this.raster.position = new Point(window.innerWidth / 2, window.innerHeight / 2);
+		const canvas = document.getElementById('paper-canvas');
+		this.raster.position = new Point(
+			canvas.offsetWidth / 2,
+			canvas.offsetHeight / 2
+		);
 		this.raster.opacity = 0.1;
 		this.group.addChild(this.raster);
 	}
-
 
 	render() {
 		return (
 			<Fragment>
 				<img id='paper-img' title='loaded image' />
+
 				<canvas id='paper-canvas' resize='true' />
 				<SketchControls
 					addDotEnableState={this.state.addDotEnable}
 					eraseDotEnableState={this.state.eraseDotEnable}
 					showPathState={this.state.showPath}
-
 					toggleAddDot={this.toggleAddDot}
 					handleUndoDot={this.handleUndoDot}
 					toggleEraseDot={this.toggleEraseDot}
