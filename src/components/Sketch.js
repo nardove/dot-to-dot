@@ -59,7 +59,7 @@ export default class Sketch extends Component {
 			offset.x,
 			offset.y,
 			800, // check window.innerWidth
-			window.innerHeight > 800 ? 700 : window.innerHeight - offset.y
+			window.innerHeight > 800 ? 600 : window.innerHeight - offset.y
 		);
 		rect.strokeColor = 'grey';
 		rect.fillColor = 'white';
