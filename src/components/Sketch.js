@@ -28,7 +28,7 @@ export default class Sketch extends Component {
 		this.points = [];
 		this.group = null; // will use this to hold all the drawing for easy window render and export to file
 		this.raster = null;
-
+		this.canvas;
 		// SketchControl functions
 		this.togglePathVisibility = this.togglePathVisibility.bind(this);
 		this.toggleAddDot = this.toggleAddDot.bind(this);
@@ -49,21 +49,22 @@ export default class Sketch extends Component {
 
 	componentDidMount() {
 		// Paperjs initialization settings
+		this.canvas = document.getElementById('paper-canvas');
 		paper.install(window);
-		paper.setup('paper-canvas');
+		paper.setup(this.canvas);
+
 		// console.log("Paper loaded");
+		const width = this.canvas.offsetWidth;
+		const height = this.canvas.offsetHeight - 300;
+		console.log(width, height);
 
 		this.group = new Group();
-		const offset = { x: 0, y: 110 };
-		const rect = new Shape.Rectangle(
-			offset.x,
-			offset.y,
-			800, // check window.innerWidth
-			window.innerHeight > 800 ? 600 : window.innerHeight - offset.y
-		);
+
+		const rect = new Shape.Rectangle(0, 150, width, height);
 		rect.strokeColor = 'grey';
 		rect.fillColor = 'white';
 		// rect.selected = true;
+
 		this.group.position = new Point(
 			window.innerWidth / 2,
 			window.innerHeight / 2
@@ -194,7 +195,7 @@ export default class Sketch extends Component {
 	}
 
 	addImageToRaster() {
-		console.log('add image to raster');
+		// console.log('add image to raster');
 		// Check if there is an image already loaded
 		// if so clears the raster addDotEnableState,
 		if (this.raster !== null) {
@@ -202,10 +203,9 @@ export default class Sketch extends Component {
 		}
 		// otherwise adds the new loaded image
 		this.raster = new Raster('paper-img');
-		const canvas = document.getElementById('paper-canvas');
 		this.raster.position = new Point(
-			canvas.offsetWidth / 2,
-			canvas.offsetHeight / 2
+			this.canvas.offsetWidth / 2,
+			this.canvas.offsetHeight / 2
 		);
 		this.raster.opacity = 0.1;
 		this.group.addChild(this.raster);
