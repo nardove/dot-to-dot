@@ -41,6 +41,7 @@ export default class Sketch extends Component {
 
 		// IOControl functions
 		this.addImageToRaster = this.addImageToRaster.bind(this);
+		this.adjustImageRaster = this.adjustImageRaster.bind(this);
 
 		// General functions
 		this.handleMouseClick = this.handleMouseClick.bind(this);
@@ -56,7 +57,6 @@ export default class Sketch extends Component {
 		// console.log("Paper loaded");
 		const width = this.canvas.offsetWidth;
 		const height = this.canvas.offsetHeight - 300;
-		console.log(width, height);
 
 		this.group = new Group();
 
@@ -211,6 +211,15 @@ export default class Sketch extends Component {
 		this.group.addChild(this.raster);
 	}
 
+	adjustImageRaster(sliderObj) {
+		console.log('adjusting image', sliderObj);
+		if (sliderObj.type === 'opacity') {
+			this.raster.opacity = sliderObj.value;
+		} else if (sliderObj.type === 'scale') {
+			this.raster.scale(sliderObj.value);
+		}
+	}
+
 	render() {
 		return (
 			<Fragment>
@@ -226,7 +235,7 @@ export default class Sketch extends Component {
 					toggleEraseDot={this.toggleEraseDot}
 					togglePathVisibility={this.togglePathVisibility}
 				/>
-				<IOControls addImageToRaster={this.addImageToRaster} />
+				<IOControls addImageToRaster={this.addImageToRaster} adjustImageRaster={this.adjustImageRaster} />
 			</Fragment>
 		);
 	}
