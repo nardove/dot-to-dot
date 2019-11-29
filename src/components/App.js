@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, { Component, Fragment } from 'react';
 import Header from './Header';
 import Sketch from './Sketch';
 
@@ -8,7 +8,7 @@ export default class App extends Component {
 		return (
 			<Fragment>
 				<Header />
-				<Sketch	/>
+				<Sketch />
 			</Fragment>
 		);
 	}

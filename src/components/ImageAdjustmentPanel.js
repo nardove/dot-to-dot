@@ -1,7 +1,4 @@
-import React, {
-	Component,
-	Fragment
-} from 'react';
+import React, { Component } from 'react';
 
 export default class ImageAdjustmentPanel extends Component {
 	constructor(props) {
@@ -11,7 +8,6 @@ export default class ImageAdjustmentPanel extends Component {
 	}
 
 	updateRange(event) {
-		console.log(event.target.id);
 		const slider = {
 			type: event.target.id,
 			value: event.target.value
@@ -22,10 +18,10 @@ export default class ImageAdjustmentPanel extends Component {
 	render() {
 		return (
 			<div className='io-panel'>
-				<p>Image opacity</p>
-				<input id='opacity' type='range' min='0' max='0.7' step='0.01' defaultValue='0.5' onChange={this.updateRange} />
-				<p>Image scale</p>
-				<input id='scale' type='range' min='0' max='5' step='0.01' defaultValue='0.5' onChange={this.updateRange} />
+				<label htmlFor='opacity'>Image opacity</label>
+				<input id='opacity' name='opacity' type='range' min='0' max='0.7' step='0.01' defaultValue='0.1' onChange={this.updateRange} />
+				<label htmlFor='scale'>Image scale</label>
+				<input id='scale' name='scale' type='range' min='0.1' max='2' step='0.1' defaultValue='1' onChange={this.updateRange} />
 			</div>
 		);
 	}

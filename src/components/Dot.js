@@ -1,4 +1,5 @@
-import {TweenMax} from 'gsap/TweenMax';
+import { TweenMax } from 'gsap/TweenMax';
+import { Shape, PointText } from 'paper';
 
 export default class Dot {
 	constructor(id, position, color, group) {
@@ -6,7 +7,7 @@ export default class Dot {
 			content: id,
 			justification: 'center',
 			fontSize: 10,
-			fontWeight: 'bold',
+			// fontWeight: 'bold',
 			fillColor: color,
 			position: position.subtract(7)
 		});
@@ -22,18 +23,20 @@ export default class Dot {
 
 		group.addChild(this.id);
 		group.addChild(this.shape);
-		
+
 		TweenMax.fromTo(this.shape, 0.25,
-			{opacity:0.5, radius:this.dotSize*4},
-			{opacity:1, radius:this.dotSize, ease:Power1.easeIn});
+			{ opacity: 0.5, radius: this.dotSize * 4 },
+			{ opacity: 1, radius: this.dotSize, ease: Power1.easeIn });
 	}
 
 	remove() {
 		this.id.remove();
 		TweenMax.to(this.shape, 0.2,
-			{opacity:0.2, radius:this.dotSize*4, ease:Power1.easeOut,
-				onComplete:() => {
+			{
+				opacity: 0.2, radius: this.dotSize * 4, ease: Power1.easeOut,
+				onComplete: () => {
 					this.shape.remove();
-			}});
+				}
+			});
 	}
 }

@@ -10,29 +10,33 @@ import aboutIcon from '../assets/gui-icons/glyphicons-basic-636-circle-info.svg'
 import TweenLite from 'gsap/TweenLite';
 import FileLoaderPanel from './FileLoaderPanel';
 import ImageAdjustmentPanel from './ImageAdjustmentPanel';
+import AboutPanel from './AboutPanel';
+
 
 export default class IOControls extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			showFileLoader: false,
-			showImageAdjustmentPanel: false
+			showImageAdjustmentPanel: false,
+			showAboutPanel: false
 		};
 
 		this.toggleFileLoader = this.toggleFileLoader.bind(this);
 		this.toggleImageAdjustmentPanel = this.toggleImageAdjustmentPanel.bind(this);
+		this.toggleAboutPanel = this.toggleAboutPanel.bind(this);
 
 		this.imageLoadComplete = this.imageLoadComplete.bind(this);
 		this.adjustImage = this.adjustImage.bind(this);
+		this.exportDrawing = this.exportDrawing.bind(this);
 
 		this.fileLoaderRef = React.createRef();
 		this.imageAdjustRef = React.createRef();
+		this.aboutRef = React.createRef();
 	}
 
 	toggleFileLoader(event) {
-		this.setState({
-			showFileLoader: !this.state.showFileLoader
-		},
+		this.setState({ showFileLoader: !this.state.showFileLoader },
 			() => {
 				this.togglePanel(this.state.showFileLoader, this.fileLoaderRef);
 			}
@@ -41,11 +45,17 @@ export default class IOControls extends Component {
 	}
 
 	toggleImageAdjustmentPanel(event) {
-		this.setState({
-			showImageAdjustmentPanel: !this.state.showImageAdjustmentPanel
-		},
+		this.setState({ showImageAdjustmentPanel: !this.state.showImageAdjustmentPanel },
 			() => {
 				this.togglePanel(this.state.showImageAdjustmentPanel, this.imageAdjustRef);
+			}
+		);
+	}
+
+	toggleAboutPanel(event) {
+		this.setState({ showAboutPanel: !this.state.showAboutPanel },
+			() => {
+				this.togglePanel(this.state.showAboutPanel, this.aboutRef);
 			}
 		);
 	}
@@ -56,11 +66,11 @@ export default class IOControls extends Component {
 				opacity: 1,
 				display: ''
 			}) :
-			TweenLite.to(ref, 0.1, {
+			TweenLite.to(ref, 0.15, {
 				opacity: 0,
 				display: 'none',
 				onComplete: () => {
-					console.log('image adjust panel hide complete');
+					// console.log('image adjust panel hide complete');
 				}
 			});
 	}
@@ -79,6 +89,11 @@ export default class IOControls extends Component {
 		this.props.adjustImageRaster(sliderObj);
 	}
 
+	exportDrawing() {
+		this.props.exportDrawing();
+	}
+
+
 	render() {
 		// const toogleDisplay = this.state.showFileLoader ? {} : {display: 'none'};
 		return (
@@ -89,35 +104,46 @@ export default class IOControls extends Component {
 							src={imgIcon}
 							alt='Load photo'
 							title='Load photo'
-							onClick={
-								this.toggleFileLoader
-							} />
-						{/* <img className='img-btn' src={newIcon}  alt='Create new' title='Create new' onClick={this.openFileLoader} /> */}
+							onClick={this.toggleFileLoader}
+						/>
+						{/* <img className='img-btn' src={newIcon} alt='Create new' title='Create new' onClick={this.openFileLoader} /> */}
 						<img className='img-btn'
 							src={settingsIcon}
 							alt='Image settings'
 							title='Image settings'
-							onClick={this.toggleImageAdjustmentPanel} />
+							onClick={this.toggleImageAdjustmentPanel}
+						/>
 						<img className='img-btn'
 							src={downloadIcon}
 							alt='Download'
-							title='Download' />
+							title='Download'
+							onClick={this.exportDrawing}
+						/>
 						<img className='img-btn'
 							src={aboutIcon}
 							alt='About'
-							title='About' />
+							title='About'
+							onClick={this.toggleAboutPanel}
+						/>
 					</div>
 				</div>
+
 				<div className='row justify-content-end' style={{ display: 'none' }} ref={(element) => (this.fileLoaderRef = element)} >
 					<div className='file-loader-holder col-auto' onMouseLeave={this.toggleFileLoader} >
 						<FileLoaderPanel imageLoaded={this.imageLoadComplete} />
 					</div>
 				</div>
+
 				<div className='row justify-content-end' style={{ display: 'none' }} ref={(element) => (this.imageAdjustRef = element)} >
 					<div className='file-loader-holder col-auto' onMouseLeave={this.toggleImageAdjustmentPanel} >
 						<ImageAdjustmentPanel adjustImage={this.adjustImage} />
 					</div>
+				</div>
 
+				<div className='row justify-content-end' style={{ display: 'none' }} ref={(element) => (this.aboutRef = element)}>
+					<div className='about-panel col-auto' >
+						<AboutPanel closePanel={this.toggleAboutPanel} />
+					</div>
 				</div>
 			</div>
 		);
