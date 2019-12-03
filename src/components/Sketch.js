@@ -58,7 +58,7 @@ export default class Sketch extends Component {
 	componentDidMount() {
 		// Paperjs initialization settings
 		this.canvas = document.getElementById('paper-canvas');
-		// console.log("Paper loaded");
+		// console.log('Paper loaded');
 		// const width = this.canvas.offsetWidth;
 		// const height = this.canvas.offsetHeight - 300;
 		const width = 800;
@@ -140,8 +140,8 @@ export default class Sketch extends Component {
 	}
 
 	handleMouseClick(event) {
-		// console.log("Add dot enable:", this.state.addDotEnable);
-		// console.log("Erase dot enable:", this.state.eraseDotEnable);
+		// console.log('Add dot enable:', this.state.addDotEnable);
+		// console.log('Erase dot enable:', this.state.eraseDotEnable);
 		if (this.state.addDotEnable) {
 			this.addDot(event);
 		} else if (this.state.eraseDotEnable) {
@@ -189,7 +189,7 @@ export default class Sketch extends Component {
 				this.dots[dotIndex].remove();
 				this.dots.splice(dotIndex, 1);
 				this.updateDotNumbers();
-				// console.log("hit:", dotIndex, this.path.segments.length);
+				// console.log('hit:', dotIndex, this.path.segments.length);
 				return;
 			}
 		});
@@ -210,7 +210,7 @@ export default class Sketch extends Component {
 			removedDot.remove();
 			this.dot_id--;
 		}
-		// console.log("Undo last dot", lastPointIndex);
+		// console.log('Undo last dot', lastPointIndex);
 	}
 
 	addImageToRaster() {
@@ -245,10 +245,15 @@ export default class Sketch extends Component {
 	exportDrawing() {
 		console.log('Initializing PDF export');
 
-		const fileName = "dot-to-dot-drawing.pdf"
+		const fileName = 'dot-to-dot-drawing.pdf'
 
 		// Before we capture the canvas, first hide the raters object
 		this.rasterGrp.visible = false;
+		this.viewRect.strokeColor = 'white';
+		for (const d of this.dots) {
+			d.shape.radius = 1;
+			d.id.fontSize = 6;
+		}
 		paper.view.draw();
 		html2canvas(this.canvas).then((canvas) => {
 			const imgData = canvas.toDataURL('image/png');
@@ -258,11 +263,21 @@ export default class Sketch extends Component {
 			const height = ratio * width;
 			const xPosition = 5;
 			const yPosition = (doc.internal.pageSize.getHeight() - height) / 2;
+			// doc.addFont('Quicksand-VariableFont/wght.ttf', 'Quicksand', 'Light');
+			// doc.setFont('Quicksand');
+			// doc.addFont('Helvetica');
+			doc.setFontSize(24);
+			doc.setFontType('bold');
+			doc.text('dot-to-dot', width / 2, 30, 'center');
 			doc.addImage(imgData, 'PNG', xPosition, yPosition, width, ratio * width, 'NONE');
-			doc.text('dot-to-dot', xPosition, 10);
 			doc.save(fileName);
 		});
 		// After the pdf is created show the raster again
+		this.viewRect.strokeColor = 'grey';
+		for (const d of this.dots) {
+			d.shape.radius = 2;
+			d.id.fontSize = 10;
+		}
 		this.rasterGrp.visible = true;
 
 		// const exportOptions = {
@@ -270,8 +285,8 @@ export default class Sketch extends Component {
 		// 	asString: false,
 		// };
 		// const svg = paper.project.exportSVG(exportOptions);
-		// const url = "data:image/svg+xml;utf8," + encodeURIComponent(svg);
-		// const link = document.createElement("a");
+		// const url = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+		// const link = document.createElement('a');
 		// link.download = fileName;
 		// link.href = url;
 		// link.click();

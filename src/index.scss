@@ -29,16 +29,15 @@ body {
 
 .paperCanvas {
 	// margin: auto;
-	// padding: 0px;
+	padding: 1px;
 	// z-index: -1;
 	display: block;
 	position: relative;
 	// max-width: $maxWidth;
 	// height: 100%;
-}
-
-.hiddenCanvas {
-	display: none;
+	// box-sizing: border-box;
+	// border: 1px solid grey;
+	
 }
 
 .header {

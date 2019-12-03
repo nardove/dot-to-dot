@@ -28,8 +28,6 @@ export default class SketchControls extends Component {
 		this.props.addDotEnableState
 			? this.onButton(this.addBtnRef)
 			: this.offButton(this.addBtnRef);
-		// this.toggleAddDot();
-		// this.offButton(this.eraseBtnRef);
 		this.props.eraseDotEnableState
 			? this.onButton(this.eraseBtnRef)
 			: this.offButton(this.eraseBtnRef);
@@ -37,9 +35,8 @@ export default class SketchControls extends Component {
 		this.props.showPathState
 			? this.onButton(this.pathBtnRef)
 			: this.offButton(this.pathBtnRef);
-		// this.togglePathVisiblility();
 		this.offButton(this.paletteBtnRef);
-		this.offButton(this.textBtnRef);
+		// this.offButton(this.textBtnRef);
 	}
 
 	onButton(element) {
@@ -134,13 +131,13 @@ export default class SketchControls extends Component {
 					title='Dots color options'
 					ref={img => (this.paletteBtnRef = img)}
 				/>
-				<img
+				{/* <img
 					className='img-btn'
 					src={textIcon}
 					alt='Add text'
 					title='Add text'
 					ref={img => (this.textBtnRef = img)}
-				/>
+				/> */}
 			</div>
 		);
 	}
