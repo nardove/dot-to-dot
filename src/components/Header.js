@@ -1,21 +1,30 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import appIcon from '../assets/dot-to-dot-icon.svg';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+
+const typoClass = {
+	fontFamily: 'Quicksand',
+	textAlign: 'left'
+}
 
 
 export default class Header extends Component {
 	render() {
-		return(
-			<div className='header container-fluid'>
-				<div className='row justify-content-start'>
-					<div className='col-1'>
-						<img src={appIcon} alt='App Logo' title='App Logo' />
-					</div>
-					<div className='col-11 text-left'>	
-						<h1>dot&#8212;to&#8212;dot</h1>
-						<h5>Create and share your own dot-to-dot drawings</h5>
-					</div>
-				</div>
-			</div>
+		return (
+			<Grid container direction='row' justify='flex-start' alignItems='flex-start'>
+				<Grid item>
+					<img className='app-logo' src={appIcon} alt='App Logo' title='App Logo' />
+				</Grid>
+				<Grid item>
+					<Typography variant='h4' style={typoClass}>
+						Name goes here
+					</Typography>
+					<Typography variant='h6' style={typoClass}>
+						Create and share your own dot to dot puzzles
+					</Typography>
+				</Grid>
+			</Grid>
 		);
 	}
 }

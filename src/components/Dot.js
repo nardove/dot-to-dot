@@ -1,4 +1,4 @@
-import { TweenMax } from 'gsap/TweenMax';
+import gsap from 'gsap';
 import { Shape, PointText } from 'paper';
 
 export default class Dot {
@@ -24,16 +24,27 @@ export default class Dot {
 		group.addChild(this.id);
 		group.addChild(this.shape);
 
-		TweenMax.fromTo(this.shape, 0.25,
-			{ opacity: 0.5, radius: this.dotSize * 4 },
-			{ opacity: 1, radius: this.dotSize, ease: Power1.easeIn });
+		gsap.fromTo(this.shape, 0.25,
+			{
+				opacity: 0.5,
+				radius: this.dotSize * 4
+			},
+			{
+				opacity: 1,
+				radius: this.dotSize,
+				ease: 'power1.out'
+			});
 	}
 
-	remove() {
+	remove(doDelay = false) {
+		const wait = this.id.content;
 		this.id.remove();
-		TweenMax.to(this.shape, 0.2,
+		gsap.to(this.shape, (doDelay) ? wait * 0.02 : 0.2,
 			{
-				opacity: 0.2, radius: this.dotSize * 4, ease: Power1.easeOut,
+				opacity: 0.2,
+				radius: this.dotSize * 4,
+				ease: 'power4.inOut',
+				delay: (doDelay) ? wait * 0.01 : 0,
 				onComplete: () => {
 					this.shape.remove();
 				}

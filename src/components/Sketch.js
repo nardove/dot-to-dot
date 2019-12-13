@@ -1,18 +1,28 @@
 // Experimental web app to create dot-to-dot images
-// Using Paperjs and Reactjs as main libraries
+// Using  Reactjs and Paperjs as drawing engine
+//
 // TODO:
-// * User to upload an image as reference
-// * Been able to adjust the image
-// * Adding dots with mouse clicks
-// * Add ability to undo or erase dots
-// * Add export to PDF or print the resulting image
+// - Add a title to the drawing that can be optional
+// - Implement dot colour customization
+// - Work on the Information panel
+// 
+
 import React, { Component, Fragment } from 'react';
 import paper, { Group, Shape, Point, Path, Color, Raster } from 'paper';
 import Dot from './Dot';
 import SketchControls from './SketchControls';
 import IOControls from './IOControls';
+import Header from './Header';
 import jsPDF from 'jspdf';
 import * as html2canvas from 'html2canvas';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+import InputBase from '@material-ui/core/InputBase';
+import { sizing } from '@material-ui/system';
+import CloseIcon from '@material-ui/icons/Close';
+import Snackbar from '@material-ui/core/Snackbar';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
 
 
 export default class Sketch extends Component {
@@ -34,6 +44,7 @@ export default class Sketch extends Component {
 		this.canvas;
 		this.rasterGrp;
 		this.viewRect;
+		this.drawingTitle = '';
 
 		// SketchControl functions
 		this.togglePathVisibility = this.togglePathVisibility.bind(this);
@@ -44,6 +55,8 @@ export default class Sketch extends Component {
 		this.eraseDot = this.eraseDot.bind(this);
 		this.undoDot = this.undoDot.bind(this);
 		this.updateDotNumbers = this.updateDotNumbers.bind(this);
+		this.deleteAllDots = this.deleteAllDots.bind(this);
+		this.toggleColourPanel = this.toggleColourPanel.bind(this);
 
 		// IOControl functions
 		this.addImageToRaster = this.addImageToRaster.bind(this);
@@ -53,6 +66,7 @@ export default class Sketch extends Component {
 		// General functions
 		this.handleMouseClick = this.handleMouseClick.bind(this);
 		this.handleWindowResize = this.handleWindowResize.bind(this);
+		this.updateDrawingTitle = this.updateDrawingTitle.bind(this);
 	}
 
 	componentDidMount() {
@@ -108,11 +122,16 @@ export default class Sketch extends Component {
 
 	// Setting canvas max-width breaks thes resize eventlistener and makes the method redundant
 	handleWindowResize() {
-		const centreAlign = new Point(
-			window.innerWidth / 2,
-			window.innerHeight / 2
-		);
-		this.group.position = centreAlign;
+		const width = 800;
+		const height = window.innerHeight - 200;
+		this.canvas.width = width;
+		this.canvas.height = height;
+
+		// const centreAlign = new Point(
+		// 	window.innerWidth / 2,
+		// 	window.innerHeight / 2
+		// );
+		// this.group.position = centreAlign;
 	}
 
 	togglePathVisibility() {
@@ -156,11 +175,7 @@ export default class Sketch extends Component {
 		const position = event.point;
 
 		// Check if mouse position is too close to the other dots
-		if (
-			this.path.segments.every(
-				segment => segment.point.getDistance(position) >= 10
-			)
-		) {
+		if (this.path.segments.every(segment => segment.point.getDistance(position) >= 10)) {
 			// Creates a new colour that auto change its tint
 			const color = new Color('yellow');
 			color.hue -= this.dot_id + 50;
@@ -213,6 +228,13 @@ export default class Sketch extends Component {
 		// console.log('Undo last dot', lastPointIndex);
 	}
 
+	deleteAllDots() {
+		for (const d of this.dots) d.remove(true);
+		this.path.removeSegments();
+		this.dots = [];
+		this.dot_id = 0;
+	}
+
 	addImageToRaster() {
 		// console.log('add image to raster');
 		// Check if there is an image already loaded
@@ -241,7 +263,6 @@ export default class Sketch extends Component {
 		}
 	}
 
-
 	exportDrawing() {
 		console.log('Initializing PDF export');
 
@@ -251,8 +272,8 @@ export default class Sketch extends Component {
 		this.rasterGrp.visible = false;
 		this.viewRect.strokeColor = 'white';
 		for (const d of this.dots) {
-			d.shape.radius = 1;
-			d.id.fontSize = 6;
+			d.shape.radius = 1.3;
+			d.id.fontSize = 7;
 		}
 		paper.view.draw();
 		html2canvas(this.canvas).then((canvas) => {
@@ -266,9 +287,13 @@ export default class Sketch extends Component {
 			// doc.addFont('Quicksand-VariableFont/wght.ttf', 'Quicksand', 'Light');
 			// doc.setFont('Quicksand');
 			// doc.addFont('Helvetica');
-			doc.setFontSize(24);
-			doc.setFontType('bold');
-			doc.text('dot-to-dot', width / 2, 30, 'center');
+			doc.setFontSize(18);
+			// doc.setFontType('bold');
+			doc.text('dot-to-dot', width / 2, 30, { align: 'center' });
+
+			doc.setFontSize(14);
+			// doc.setFontType('normal');
+			doc.text(this.drawingTitle, width / 2, 60, { maxWidth: 300, align: 'center' });
 			doc.addImage(imgData, 'PNG', xPosition, yPosition, width, ratio * width, 'NONE');
 			doc.save(fileName);
 		});
@@ -292,25 +317,62 @@ export default class Sketch extends Component {
 		// link.click();
 	}
 
+	updateDrawingTitle(event) {
+		this.drawingTitle = event.target.value;
+	}
+
+	toggleColourPanel() {
+		console.log('open colour panel');
+	}
+
+
 	render() {
 		return (
 			<Fragment>
-				<img id='paper-img' title='loaded image' />
-				<canvas id='paper-canvas' className='paperCanvas' />
-				<SketchControls
-					addDotEnableState={this.state.addDotEnable}
-					eraseDotEnableState={this.state.eraseDotEnable}
-					showPathState={this.state.showPath}
-					handleUndoDot={this.handleUndoDot}
-					toggleAddDot={this.toggleAddDot}
-					toggleEraseDot={this.toggleEraseDot}
-					togglePathVisibility={this.togglePathVisibility}
-				/>
-				<IOControls
-					addImageToRaster={this.addImageToRaster}
-					adjustImageRaster={this.adjustImageRaster}
-					exportDrawing={this.exportDrawing}
-				/>
+				<img id='paper-img' className='paper-img' title='loaded image' />
+				<Grid container direction='column' justify='space-evenly' alignItems='center' style={{ height: '100%' }}>
+					<Grid item style={{ width: '800px' }} >
+						<Grid container direction='row' justify='space-between' alignItems='center'>
+							<Grid item>
+								<Header />
+							</Grid>
+							<Grid item>
+								<IOControls
+									addImageToRaster={this.addImageToRaster}
+									adjustImageRaster={this.adjustImageRaster}
+									exportDrawing={this.exportDrawing}
+								/>
+							</Grid>
+						</Grid>
+					</Grid>
+
+					<Grid item style={{ width: '400px' }}>
+						<InputBase
+							defaultValue='Untitled'
+							onChange={this.updateDrawingTitle}
+							fullWidth={true}
+							inputProps={{ style: { textAlign: 'center', color: '#909090' } }}
+						/>
+					</Grid>
+
+					<Grid item>
+						<canvas id='paper-canvas' className='paperCanvas' />
+					</Grid>
+
+					<Grid item>
+						<SketchControls
+							addDotEnableState={this.state.addDotEnable}
+							eraseDotEnableState={this.state.eraseDotEnable}
+							showPathState={this.state.showPath}
+							handleUndoDot={this.handleUndoDot}
+							toggleAddDot={this.toggleAddDot}
+							toggleEraseDot={this.toggleEraseDot}
+							togglePathVisibility={this.togglePathVisibility}
+							deleteAllDots={this.deleteAllDots}
+							toggleColourPanel={this.toggleColourPanel}
+						/>
+					</Grid>
+				</Grid>
 			</Fragment>
 		);
 	}
