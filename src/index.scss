@@ -32,30 +32,30 @@ body {
 }
 
 .img-btn {
-	width: $icon-size;
-	// margin-right: 10px;
-	margin-left: 30px;
-	// padding-left: 10px;
-	// padding-right: 10px;
-	cursor: pointer;
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
 }
 
-.io-controls {
-	input {
-		font-size: $font-size;
-		width: 280px;
-		background: white;
-		border-radius: 5px;
-	}
+// .io-controls {
+// 	input {
+// 		font-size: $font-size;
+// 		width: 280px;
+// 		background: white;
+// 		border-radius: 5px;
+// 	}
 
-	.file-loader-holder {
-		padding: 0px;
-	}
-}
+// 	.file-loader-holder {
+// 		padding: 0px;
+// 	}
+// }
 
 .io-panel {
 	width: 300px;
-	height: 50px;
+	// height: 50px;
 	position: fixed;
 	left: 620px
 }
@@ -72,48 +72,9 @@ body {
 	width: 300px;
 }
 
-// .io-panel {
-// 	width: 280px;
-// 	// height: 200px;
-// 	background: white;
-// 	position: absolute;
-// 	z-index: 99;
-// 	// box-shadow: 0px 0px 5px grey;
-// 	border-radius: 5px;
-// 	margin-top: 10px;
-// 	font-size: $font-size;
-
-// 	label {
-// 		padding-top: 10px;
-// 	}
-	
-// 	input[type=range] {
-// 		width: 250px;
-// 	}
-// }
-
-// .about-panel {
-// 	display: block;
-// 	// margin-left: auto;
-// 	// margin-right: auto;
-// 	// margin-top: 150px;
-// 	width: $panel-width;
-// 	// height: $panel-height;
-// 	left: 50%;
-// 	top: 50%;
-// 	margin-left: -($panel-width / 2);
-// 	margin-top: -($panel-height / 2);
-// 	position: fixed;
-// 	z-index: 99;
-// }
-
-
-// button {
-// 	position: relative;
-// }
-
-
-// .iconBtn {
-// 	display: flex;
-//     flex-direction: column;
-// }
+.colour-picker {
+	position: fixed;
+	bottom: 80px;
+	left: 50%;
+	padding: 10px;
+}

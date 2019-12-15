@@ -19,6 +19,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 
 const legendItem = {
@@ -89,6 +90,10 @@ export default class AboutPanel extends Component {
 							<Grid item style={legendItem}>
 								<ColorLensIcon style={iconItem} />
 								<Typography variant='subtitle2'>Change dot tint colour</Typography>
+							</Grid>
+							<Grid item style={legendItem}>
+								<DeleteIcon style={iconItem} />
+								<Typography variant='subtitle2'>Remove all dots</Typography>
 							</Grid>
 							<Grid item style={legendItem}>
 								<AddPhotoAlternateIcon style={iconItem} />

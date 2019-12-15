@@ -31,7 +31,8 @@ export default class Sketch extends Component {
 		this.state = {
 			addDotEnable: true,
 			eraseDotEnable: false,
-			showPath: false
+			showPath: false,
+			currentColour: { r: 0, g: 255, b: 86, a: 1 }
 		};
 
 		// Paperjs objects
@@ -45,6 +46,7 @@ export default class Sketch extends Component {
 		this.rasterGrp;
 		this.viewRect;
 		this.drawingTitle = '';
+		// this.currentColour = { r: 0, g: 255, b: 86, a: 1 };
 
 		// SketchControl functions
 		this.togglePathVisibility = this.togglePathVisibility.bind(this);
@@ -56,7 +58,7 @@ export default class Sketch extends Component {
 		this.undoDot = this.undoDot.bind(this);
 		this.updateDotNumbers = this.updateDotNumbers.bind(this);
 		this.deleteAllDots = this.deleteAllDots.bind(this);
-		this.toggleColourPanel = this.toggleColourPanel.bind(this);
+		this.handleColourChange = this.handleColourChange.bind(this);
 
 		// IOControl functions
 		this.addImageToRaster = this.addImageToRaster.bind(this);
@@ -177,13 +179,23 @@ export default class Sketch extends Component {
 		// Check if mouse position is too close to the other dots
 		if (this.path.segments.every(segment => segment.point.getDistance(position) >= 10)) {
 			// Creates a new colour that auto change its tint
-			const color = new Color('yellow');
-			color.hue -= this.dot_id + 50;
+			console.log('before:', this.state.currentColour);
+
+			const { r, g, b } = this.state.currentColour;
+			const colour = new Color(r / 255, g / 255, b / 255);
+			const colourHSB = colour.convert('hsb');
+			colourHSB.hue -= this.dot_id;
+
 			// Creates a new Dot object and store its in an array
-			const dot = new Dot(this.dot_id, position, color, this.group);
+			const dot = new Dot(this.dot_id, position, colourHSB, this.group);
 			this.dots.push(dot);
 			// Increment dot id number
 			this.dot_id++;
+
+			// Udapte colour after it is been applied
+			const colourRGB = colourHSB.convert('rgb');
+			this.handleColourChange({ r: colourRGB.red * 255, g: colourRGB.green * 255, b: colourRGB.blue * 255, a: 1 });
+			console.log('after:', this.state.currentColour);
 
 			// Add points to the path line
 			this.path.add(position);
@@ -321,10 +333,14 @@ export default class Sketch extends Component {
 		this.drawingTitle = event.target.value;
 	}
 
-	toggleColourPanel() {
-		console.log('open colour panel');
-	}
+	handleFocus = (event) => event.target.select();
 
+	handleColourChange(colour) {
+		// console.log(colour);
+		this.setState({ currentColour: colour });
+		// this.currentColour = colour;
+		// console.log('current colour: ', this.state.currentColour);
+	}
 
 	render() {
 		return (
@@ -350,6 +366,7 @@ export default class Sketch extends Component {
 						<InputBase
 							defaultValue='Untitled'
 							onChange={this.updateDrawingTitle}
+							onFocus={this.handleFocus}
 							fullWidth={true}
 							inputProps={{ style: { textAlign: 'center', color: '#909090' } }}
 						/>
@@ -361,6 +378,7 @@ export default class Sketch extends Component {
 
 					<Grid item>
 						<SketchControls
+							currentColour={this.state.currentColour}
 							addDotEnableState={this.state.addDotEnable}
 							eraseDotEnableState={this.state.eraseDotEnable}
 							showPathState={this.state.showPath}
@@ -369,7 +387,7 @@ export default class Sketch extends Component {
 							toggleEraseDot={this.toggleEraseDot}
 							togglePathVisibility={this.togglePathVisibility}
 							deleteAllDots={this.deleteAllDots}
-							toggleColourPanel={this.toggleColourPanel}
+							handleColourChange={this.handleColourChange}
 						/>
 					</Grid>
 				</Grid>

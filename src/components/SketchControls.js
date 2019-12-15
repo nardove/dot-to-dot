@@ -7,7 +7,7 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import ColorLensIcon from '@material-ui/icons/ColorLens';
 import UndoIcon from '@material-ui/icons/Undo';
 import DeleteIcon from '@material-ui/icons/Delete';
-
+import { HuePicker } from 'react-color';
 
 
 export default class SketchControls extends Component {
@@ -16,7 +16,8 @@ export default class SketchControls extends Component {
 
 		this.state = {
 			addBtnState: true,
-			eraseBtnState: false
+			eraseBtnState: false,
+			showPalette: false
 		}
 
 		this.toggleAddDot = this.toggleAddDot.bind(this);
@@ -26,7 +27,8 @@ export default class SketchControls extends Component {
 		this.handleClick = this.handleClick.bind(this);
 		this.handleDeleteAllDots = this.handleDeleteAllDots.bind(this);
 		this.toggleColourPanel = this.toggleColourPanel.bind(this);
-		
+		this.handleColourChange = this.handleColourChange.bind(this);
+
 		this.addBtnRef = React.createRef();
 		this.eraseBtnRef = React.createRef();
 		this.undoBtnRef = React.createRef();
@@ -59,8 +61,9 @@ export default class SketchControls extends Component {
 		this.props.deleteAllDots();
 	}
 
-	toggleColourPanel() {
-		this.props.toggleColourPanel();
+	toggleColourPanel(event) {
+		// console.log(this.props.currentColour);
+		this.setState({ showPalette: !this.state.showPalette });
 	}
 
 
@@ -105,6 +108,10 @@ export default class SketchControls extends Component {
 		}
 	}
 
+	handleColourChange(colour, event) {
+		this.props.handleColourChange(colour.rgb);
+	}
+
 	render() {
 		return (
 			<Fragment>
@@ -114,7 +121,6 @@ export default class SketchControls extends Component {
 					onClick={this.handleClick}
 				>
 					<AddCircleOutlineIcon />
-					{/* <div>Add dots</div> */}
 				</IconButton>
 
 				<IconButton
@@ -142,7 +148,7 @@ export default class SketchControls extends Component {
 						/>
 					}
 					label='Show line'
-					labelPlacement='start'/>
+					labelPlacement='start' />
 
 				<IconButton
 					style={{ marginLeft: '20px' }}
@@ -151,6 +157,10 @@ export default class SketchControls extends Component {
 				>
 					<ColorLensIcon />
 				</IconButton>
+
+				<div className='colour-picker' onMouseLeave={this.toggleColourPanel}>
+					{this.state.showPalette && <HuePicker color={this.props.currentColour} onChange={this.handleColourChange} />}
+				</div>
 
 				<IconButton
 					ref={el => (this.trashBtnRef = el)}

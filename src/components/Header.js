@@ -18,7 +18,7 @@ export default class Header extends Component {
 				</Grid>
 				<Grid item>
 					<Typography variant='h4' style={typoClass}>
-						Name goes here
+						dot-to-dot
 					</Typography>
 					<Typography variant='h6' style={typoClass}>
 						Create and share your own dot to dot puzzles

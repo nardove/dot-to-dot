@@ -38,7 +38,6 @@ export default class ImageAdjustmentPanel extends Component {
 	render() {
 		return (
 			<div onMouseLeave={this.handleClose}>
-				{/* <Card style={{ width: '300px', position: 'fixed', float: 'right' }}> */}
 				<Card className='io-panel'>
 					<CardContent>
 						<Typography variant='button' display='block'>
@@ -69,9 +68,6 @@ export default class ImageAdjustmentPanel extends Component {
 							onChange={this.updateRange('scale')}
 						/>
 					</CardContent>
-					{/* <CardActions>
-						<Button size="small" onClick={this.handleClose}>Close</Button>
-					</CardActions> */}
 				</Card>
 			</div>
 		);
