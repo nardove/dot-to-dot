@@ -13,13 +13,15 @@ export default class Dot {
 		});
 		this.position = position;
 		this.color = color;
-		this.dotSize = 2;
+		this.dotSize = (id === 0) ? 3 : 2;
 		this.shape = new Shape.Circle({
 			position: position,
 			radius: this.dotSize,
-			fillColor: color
-			// strokeColor: color
+			fillColor: (id === 0) ? 'white' : color,
+			strokeWeight: (id === 0) ? 2 : 0,
+			strokeColor: (id === 0) ? color : null
 		});
+
 
 		group.addChild(this.id);
 		group.addChild(this.shape);
@@ -36,18 +38,19 @@ export default class Dot {
 			});
 	}
 
-	remove(doDelay = false) {
-		const wait = this.id.content;
+	remove(animate = false) {
 		this.id.remove();
-		gsap.to(this.shape, (doDelay) ? wait * 0.02 : 0.2,
-			{
-				opacity: 0.2,
-				radius: this.dotSize * 4,
-				ease: 'power4.inOut',
-				delay: (doDelay) ? wait * 0.01 : 0,
-				onComplete: () => {
-					this.shape.remove();
-				}
-			});
+		(animate)
+			? this.shape.remove()
+			: gsap.to(this.shape, 0.2,
+				{
+					opacity: 0.2,
+					radius: this.dotSize * 4,
+					ease: 'power4.inOut',
+					delay: 0.02,
+					onComplete: () => {
+						this.shape.remove();
+					}
+				})
 	}
 }

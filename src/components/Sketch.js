@@ -32,7 +32,9 @@ export default class Sketch extends Component {
 			addDotEnable: true,
 			eraseDotEnable: false,
 			showPath: false,
-			currentColour: { r: 0, g: 255, b: 86, a: 1 }
+			currentColour: { h: 0, s: 1, l: 0.5, a: 1 },
+			imageOpacity: 0.5,
+			imageScale: 1
 		};
 
 		// Paperjs objects
@@ -179,23 +181,20 @@ export default class Sketch extends Component {
 		// Check if mouse position is too close to the other dots
 		if (this.path.segments.every(segment => segment.point.getDistance(position) >= 10)) {
 			// Creates a new colour that auto change its tint
-			console.log('before:', this.state.currentColour);
-
-			const { r, g, b } = this.state.currentColour;
-			const colour = new Color(r / 255, g / 255, b / 255);
-			const colourHSB = colour.convert('hsb');
-			colourHSB.hue -= this.dot_id;
+			// console.log('before:', this.state.currentColour);
+			const { h, s, l } = this.state.currentColour;
+			const colour = new Color({ hue: h, saturation: s, lightness: l });
+			// colour.hue += 2;
+			(colour.hue >= 359) ? colour.hue = 0 : colour.hue += 2;
+			// Udapte colour after it is been applied
+			this.handleColourChange({ h: colour.hue, s: colour.saturation, l: colour.lightness });
+			// console.log('after:', this.state.currentColour);
 
 			// Creates a new Dot object and store its in an array
-			const dot = new Dot(this.dot_id, position, colourHSB, this.group);
+			const dot = new Dot(this.dot_id, position, colour, this.group);
 			this.dots.push(dot);
 			// Increment dot id number
 			this.dot_id++;
-
-			// Udapte colour after it is been applied
-			const colourRGB = colourHSB.convert('rgb');
-			this.handleColourChange({ r: colourRGB.red * 255, g: colourRGB.green * 255, b: colourRGB.blue * 255, a: 1 });
-			console.log('after:', this.state.currentColour);
 
 			// Add points to the path line
 			this.path.add(position);
@@ -268,15 +267,17 @@ export default class Sketch extends Component {
 	adjustImageRaster(sliderObj) {
 		// console.log('adjusting image', sliderObj);
 		if (sliderObj.type === 'opacity') {
-			this.rasterGrp.opacity = sliderObj.value;
+			// this.setState({ imageOpacity: sliderObj.value });
+			this.rasterGrp.opacity = sliderObj.value; //this.state.imageOpacity;
 		} else if (sliderObj.type === 'scale') {
 			// for the scaling to work applyMatrix needs to be set to false on the target object
-			this.rasterGrp.scaling = sliderObj.value;
+			// this.setState({ imageScale: sliderObj.value });
+			this.rasterGrp.scaling = sliderObj.value; //this.state.imageScale;
 		}
 	}
 
 	exportDrawing() {
-		console.log('Initializing PDF export');
+		// console.log('Initializing PDF export');
 
 		const fileName = 'dot-to-dot-drawing.pdf'
 
@@ -286,6 +287,7 @@ export default class Sketch extends Component {
 		for (const d of this.dots) {
 			d.shape.radius = 1.3;
 			d.id.fontSize = 7;
+			this.path.visible = false;
 		}
 		paper.view.draw();
 		html2canvas(this.canvas).then((canvas) => {
@@ -299,14 +301,18 @@ export default class Sketch extends Component {
 			// doc.addFont('Quicksand-VariableFont/wght.ttf', 'Quicksand', 'Light');
 			// doc.setFont('Quicksand');
 			// doc.addFont('Helvetica');
-			doc.setFontSize(18);
+			doc.setFontSize(14);
 			// doc.setFontType('bold');
 			doc.text('dot-to-dot', width / 2, 30, { align: 'center' });
 
-			doc.setFontSize(14);
+			doc.setFontSize(18);
 			// doc.setFontType('normal');
 			doc.text(this.drawingTitle, width / 2, 60, { maxWidth: 300, align: 'center' });
-			doc.addImage(imgData, 'PNG', xPosition, yPosition, width, ratio * width, 'NONE');
+			doc.addImage(imgData, 'PNG', xPosition, yPosition, width, height, 'NONE');
+
+			doc.setFontSize(10);
+			// doc.setFontType('normal');
+			doc.text(`Total number of dots: ${this.dots.length}`, width / 2, doc.internal.pageSize.getHeight() - 30, { maxWidth: 300, align: 'center' });
 			doc.save(fileName);
 		});
 		// After the pdf is created show the raster again
@@ -314,6 +320,7 @@ export default class Sketch extends Component {
 		for (const d of this.dots) {
 			d.shape.radius = 2;
 			d.id.fontSize = 10;
+			this.path.visible = true;
 		}
 		this.rasterGrp.visible = true;
 

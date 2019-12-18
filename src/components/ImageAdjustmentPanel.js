@@ -14,7 +14,11 @@ const slider = {
 export default class ImageAdjustmentPanel extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { open: true };
+		this.state = {
+			open: true,
+			opacity: 0.1,
+			scale: 1
+		};
 
 		this.updateRange = this.updateRange.bind(this);
 		this.handleClose = this.handleClose.bind(this);
@@ -27,6 +31,12 @@ export default class ImageAdjustmentPanel extends Component {
 			value: value
 		};
 		this.props.adjustImage(slider);
+		if (name === 'opacity') {
+			this.setState({ opacity: value });
+		}
+		else if (name === 'scale') {
+			this.setState({ scale: value });
+		}
 	}
 
 	handleClose() {
@@ -51,7 +61,7 @@ export default class ImageAdjustmentPanel extends Component {
 							min={0}
 							max={0.8}
 							step={0.01}
-							defaultValue={0.1}
+							defaultValue={this.state.opacity}
 							style={slider}
 							onChange={this.updateRange('opacity')}
 						/>
@@ -63,7 +73,7 @@ export default class ImageAdjustmentPanel extends Component {
 							min={0.1}
 							max={2}
 							step={0.1}
-							defaultValue={1}
+							defaultValue={this.state.scale}
 							style={slider}
 							onChange={this.updateRange('scale')}
 						/>

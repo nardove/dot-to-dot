@@ -2,11 +2,13 @@ import React, { Component, Fragment } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Tooltip from '@material-ui/core/Tooltip';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import ColorLensIcon from '@material-ui/icons/ColorLens';
 import UndoIcon from '@material-ui/icons/Undo';
 import DeleteIcon from '@material-ui/icons/Delete';
+import TimelineIcon from '@material-ui/icons/Timeline';
 import { HuePicker } from 'react-color';
 
 
@@ -63,7 +65,7 @@ export default class SketchControls extends Component {
 
 	toggleColourPanel(event) {
 		// console.log(this.props.currentColour);
-		this.setState({ showPalette: !this.state.showPalette });
+		this.setState({ showPalette: false });
 	}
 
 
@@ -92,7 +94,10 @@ export default class SketchControls extends Component {
 				break;
 			case this.colourBtnRef:
 				console.log('colour btn');
-				this.toggleColourPanel();
+				// this.toggleColourPanel();
+				this.setState({
+					showPalette: true
+				});
 				break;
 			case this.trashBtnRef:
 				console.log('trash btn');
@@ -109,65 +114,81 @@ export default class SketchControls extends Component {
 	}
 
 	handleColourChange(colour, event) {
-		this.props.handleColourChange(colour.rgb);
+		// console.log('colour picker hsl:', colour.hsl);
+		this.props.handleColourChange(colour.hsl);
 	}
 
 	render() {
 		return (
 			<Fragment>
-				<IconButton
-					disabled={this.state.addBtnState}
-					ref={el => (this.addBtnRef = el)}
-					onClick={this.handleClick}
-				>
-					<AddCircleOutlineIcon />
-				</IconButton>
+				<Tooltip title='Add dot' aria-label='Add dot'>
+					<span>
+						<IconButton
+							disabled={this.state.addBtnState}
+							ref={el => (this.addBtnRef = el)}
+							onClick={this.handleClick}
+						>
+							<AddCircleOutlineIcon />
+						</IconButton>
+					</span>
+				</Tooltip>
 
-				<IconButton
-					disabled={this.state.eraseBtnState}
-					ref={el => (this.eraseBtnRef = el)}
-					onClick={this.handleClick}
-				>
-					<RemoveCircleOutlineIcon />
-				</IconButton>
+				<Tooltip title='Erase dot' aria-label='Erase dot'>
+					<IconButton
+						disabled={this.state.eraseBtnState}
+						ref={el => (this.eraseBtnRef = el)}
+						onClick={this.handleClick}
+					>
+						<RemoveCircleOutlineIcon />
+					</IconButton>
+				</Tooltip>
 
-				<IconButton
-					onClick={this.handleUndoDot}
-				>
-					<UndoIcon />
-				</IconButton>
+				<Tooltip title='Undo last added dot' aria-label='Undo last added dot'>
+					<IconButton
+						onClick={this.handleUndoDot}
+					>
+						<UndoIcon />
+					</IconButton>
+				</Tooltip>
 
-				<FormControlLabel
-					control={
-						<Switch
-							size='small'
-							value="checkedF"
-							color="default"
-							inputProps={{ 'aria-label': 'Show/hide line' }}
-							onChange={this.togglePathVisiblility}
-						/>
-					}
-					label='Show line'
-					labelPlacement='start' />
+				<Tooltip title='Show/hide connecting line' aria-label='Show/hide connecting line'>
+					{/* <TimelineIcon /> */}
+					<FormControlLabel
+						control={
+							<Switch
+								size='small'
+								value="checkedF"
+								color="default"
+								inputProps={{ 'aria-label': 'Show/hide line' }}
+								onChange={this.togglePathVisiblility}
+							/>
+						}
+						label='Preview line'
+						labelPlacement='start' />
+				</Tooltip>
 
-				<IconButton
-					style={{ marginLeft: '20px' }}
-					ref={el => (this.colourBtnRef = el)}
-					onClick={this.handleClick}
-				>
-					<ColorLensIcon />
-				</IconButton>
+				<Tooltip title='Change dots colour' aria-label='Change dots colour'>
+					<IconButton
+						style={{ marginLeft: '20px' }}
+						ref={el => (this.colourBtnRef = el)}
+						onClick={this.handleClick}
+					>
+						<ColorLensIcon />
+					</IconButton>
+				</Tooltip>
 
 				<div className='colour-picker' onMouseLeave={this.toggleColourPanel}>
 					{this.state.showPalette && <HuePicker color={this.props.currentColour} onChange={this.handleColourChange} />}
 				</div>
 
-				<IconButton
-					ref={el => (this.trashBtnRef = el)}
-					onClick={this.handleClick}
-				>
-					<DeleteIcon />
-				</IconButton>
+				<Tooltip title='Delete all dots' aria-label='Delete all dots'>
+					<IconButton
+						ref={el => (this.trashBtnRef = el)}
+						onClick={this.handleClick}
+					>
+						<DeleteIcon />
+					</IconButton>
+				</Tooltip>
 			</Fragment>
 		);
 	}

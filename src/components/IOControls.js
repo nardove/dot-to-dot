@@ -1,13 +1,7 @@
 import React, {
-	Component,
-	createRef
+	Component
 } from 'react';
-import newIcon from '../assets/gui-icons/glyphicons-basic-37-file.svg';
-import imgIcon from '../assets/gui-icons/glyphicons-basic-38-picture.svg';
-import settingsIcon from '../assets/gui-icons/glyphicons-basic-138-cogwheels.svg';
-import downloadIcon from '../assets/gui-icons/glyphicons-basic-199-save.svg';
-import aboutIcon from '../assets/gui-icons/glyphicons-basic-636-circle-info.svg';
-// import FileLoaderPanel from './FileLoaderPanel';
+import Tooltip from '@material-ui/core/Tooltip';
 import ImageAdjustmentPanel from './ImageAdjustmentPanel';
 import AboutPanel from './AboutPanel';
 import IconButton from '@material-ui/core/IconButton';
@@ -46,7 +40,7 @@ export default class IOControls extends Component {
 	}
 
 	toggleImageAdjustmentPanel(event) {
-		console.log('close adjustment panel');
+		// console.log('close adjustment panel');
 		this.setState({ showImageAdjustmentPanel: !this.state.showImageAdjustmentPanel });
 	}
 
@@ -73,6 +67,16 @@ export default class IOControls extends Component {
 			imgtag.title = loadedImage.name;
 
 			const reader = new FileReader();
+			reader.onloadstart = () => {
+				console.log('image loading starter');
+			}
+			reader.onprogress = (event) => {
+				let percentLoaded = Math.round((event.loaded / event.total) * 100);
+				console.log('image loading: ', percentLoaded);
+			}
+			reader.onloadend = () => {
+				console.log('image loading completed');
+			}
 			reader.onload = (event) => {
 				imgtag.src = event.target.result;
 				// Need to add the loaded image to paperjs raster
@@ -87,31 +91,40 @@ export default class IOControls extends Component {
 
 
 	render() {
-		// const toogleDisplay = this.state.showFileLoader ? {} : {display: 'none'};
 		return (
 			<div className='io-controls' >
 				<div className='io-controls-holder' >
-					<IconButton>
-						<input className='img-btn' type='file' accept='image/*' id='raised-button-file' onChange={this.handleFileLoader} />
-						<label style={{ margin: '0px', padding: '0px', fontSize: '0em' }} htmlFor='raised-button-file'>
-							<AddPhotoAlternateIcon />
-						</label>
-					</IconButton>
-					<IconButton onClick={this.toggleImageAdjustmentPanel}>
-						<TuneIcon />
-					</IconButton>
-					<IconButton onClick={this.exportDrawing}>
-						<GetAppIcon />
-					</IconButton>
-					<IconButton onClick={this.toggleAboutPanel}>
-						<HelpIcon />
-					</IconButton>
+					<Tooltip title='Load reference image' aria-label='Load reference image'>
+						<IconButton>
+							<input className='img-btn' type='file' accept='image/*' id='raised-button-file' onChange={this.handleFileLoader} />
+							<label style={{ margin: '0px', padding: '0px', fontSize: '0em' }} htmlFor='raised-button-file'>
+								<AddPhotoAlternateIcon />
+							</label>
+						</IconButton>
+					</Tooltip>
+
+					<Tooltip title='Reference image settings' aria-label='Reference image settings'>
+						<IconButton onClick={this.toggleImageAdjustmentPanel}>
+							<TuneIcon />
+						</IconButton>
+					</Tooltip>
+
+					<Tooltip title='Download as PDF' aria-label='Download as PDF'>
+						<IconButton onClick={this.exportDrawing}>
+							<GetAppIcon />
+						</IconButton>
+					</Tooltip>
+
+					<Tooltip title='Help' aria-label='Help'>
+						<IconButton onClick={this.toggleAboutPanel}>
+							<HelpIcon />
+						</IconButton>
+					</Tooltip>
 				</div>
-				{/* <div className='panel'> */}
+
 				{this.state.showImageAdjustmentPanel && <ImageAdjustmentPanel adjustImage={this.adjustImage} handleClose={this.toggleImageAdjustmentPanel} />}
 
 				{this.state.showAboutPanel && <AboutPanel handleClose={this.toggleAboutPanel} />}
-				{/* </div> */}
 			</div>
 		);
 	}
