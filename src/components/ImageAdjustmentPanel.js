@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
-import Tooltip from '@material-ui/core/Tooltip';
 
 const slider = {
 	color: '#000000'
+}
+
+const spacing = {
+	paddingTop: '10px'
 }
 
 export default class ImageAdjustmentPanel extends Component {
@@ -16,8 +17,8 @@ export default class ImageAdjustmentPanel extends Component {
 		super(props);
 		this.state = {
 			open: true,
-			opacity: 0.1,
-			scale: 1
+			opacity: this.props.imageOpacity,
+			scale: this.props.imageScale
 		};
 
 		this.updateRange = this.updateRange.bind(this);
@@ -31,51 +32,51 @@ export default class ImageAdjustmentPanel extends Component {
 			value: value
 		};
 		this.props.adjustImage(slider);
-		if (name === 'opacity') {
-			this.setState({ opacity: value });
-		}
-		else if (name === 'scale') {
-			this.setState({ scale: value });
-		}
 	}
 
 	handleClose() {
-		console.log('close image adjustment panel');
+		// console.log('close image adjustment panel');
 		this.props.handleClose();
-		this.setState({ open: this.state.open = false });
+		this.setState({ open: false });
+	}
+
+	handleShowRasterImage() {
+		this.props.handleShowRasterImage();
 	}
 
 	render() {
 		return (
-			<div onMouseLeave={this.handleClose}>
-				<Card className='io-panel'>
+			<div className='io-panel' onMouseLeave={this.handleClose}>
+				<Card>
 					<CardContent>
 						<Typography variant='button' display='block'>
 							Image adjustment
 						</Typography>
 
-						<Typography>
-							Opacity
-						</Typography>
-						<Slider
-							min={0}
-							max={0.8}
-							step={0.01}
-							defaultValue={this.state.opacity}
-							style={slider}
-							onChange={this.updateRange('opacity')}
-						/>
-
-						<Typography>
+						<Typography style={spacing}>
 							Scale
 						</Typography>
 						<Slider
 							min={0.1}
 							max={2}
 							step={0.1}
-							defaultValue={this.state.scale}
+							defaultValue={this.props.imageScale}
 							style={slider}
 							onChange={this.updateRange('scale')}
+							onChangeCommitted={this.updateRange('scale')}
+						/>
+
+						<Typography style={spacing}>
+							Opacity
+						</Typography>
+						<Slider
+							min={0}
+							max={0.8}
+							step={0.01}
+							defaultValue={this.props.imageOpacity}
+							style={slider}
+							onChange={this.updateRange('opacity')}
+							onChangeCommitted={this.updateRange('opacity')}
 						/>
 					</CardContent>
 				</Card>

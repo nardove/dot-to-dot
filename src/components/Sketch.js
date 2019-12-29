@@ -48,7 +48,6 @@ export default class Sketch extends Component {
 		this.rasterGrp;
 		this.viewRect;
 		this.drawingTitle = '';
-		// this.currentColour = { r: 0, g: 255, b: 86, a: 1 };
 
 		// SketchControl functions
 		this.togglePathVisibility = this.togglePathVisibility.bind(this);
@@ -260,19 +259,21 @@ export default class Sketch extends Component {
 			this.canvas.offsetWidth / 2,
 			this.canvas.offsetHeight / 2
 		);
-		this.rasterGrp.opacity = 0.1;
+		this.rasterGrp.opacity = this.state.imageOpacity;
 		this.rasterGrp.addChild(this.raster);
 	}
 
 	adjustImageRaster(sliderObj) {
 		// console.log('adjusting image', sliderObj);
 		if (sliderObj.type === 'opacity') {
-			// this.setState({ imageOpacity: sliderObj.value });
-			this.rasterGrp.opacity = sliderObj.value; //this.state.imageOpacity;
+			// this.rasterGrp.opacity = sliderObj.value;
+			this.setState({ imageOpacity: sliderObj.value });
+			this.rasterGrp.opacity = this.state.imageOpacity;
 		} else if (sliderObj.type === 'scale') {
 			// for the scaling to work applyMatrix needs to be set to false on the target object
-			// this.setState({ imageScale: sliderObj.value });
-			this.rasterGrp.scaling = sliderObj.value; //this.state.imageScale;
+			// this.rasterGrp.scaling = sliderObj.value;
+			this.setState({ imageScale: sliderObj.value });
+			this.rasterGrp.scaling = this.state.imageScale;
 		}
 	}
 
@@ -287,8 +288,8 @@ export default class Sketch extends Component {
 		for (const d of this.dots) {
 			d.shape.radius = 1.3;
 			d.id.fontSize = 7;
-			this.path.visible = false;
 		}
+		if (this.state.showPath) this.path.visible = false;
 		paper.view.draw();
 		html2canvas(this.canvas).then((canvas) => {
 			const imgData = canvas.toDataURL('image/png');
@@ -320,8 +321,8 @@ export default class Sketch extends Component {
 		for (const d of this.dots) {
 			d.shape.radius = 2;
 			d.id.fontSize = 10;
-			this.path.visible = true;
 		}
+		if (this.state.showPath) this.path.visible = true;
 		this.rasterGrp.visible = true;
 
 		// const exportOptions = {
@@ -345,7 +346,6 @@ export default class Sketch extends Component {
 	handleColourChange(colour) {
 		// console.log(colour);
 		this.setState({ currentColour: colour });
-		// this.currentColour = colour;
 		// console.log('current colour: ', this.state.currentColour);
 	}
 
@@ -364,6 +364,8 @@ export default class Sketch extends Component {
 									addImageToRaster={this.addImageToRaster}
 									adjustImageRaster={this.adjustImageRaster}
 									exportDrawing={this.exportDrawing}
+									imageOpacity={this.state.imageOpacity}
+									imageScale={this.state.imageScale}
 								/>
 							</Grid>
 						</Grid>

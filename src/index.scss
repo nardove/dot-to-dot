@@ -18,7 +18,7 @@ body {
 	background-color: $main-colour;
 	text-align: center;
 	font-family: 'Quicksand', sans-serif;
-	font-size: $font-size;
+	// font-size: $font-size;
 	color: black;
 }
 
@@ -57,7 +57,7 @@ body {
 	width: 300px;
 	// height: 50px;
 	position: fixed;
-	left: 620px
+	margin-left: -80px;
 }
 
 .sketch-controls {
@@ -74,7 +74,10 @@ body {
 
 .colour-picker {
 	position: fixed;
-	bottom: 80px;
-	left: 50%;
-	padding: 10px;
+	bottom: 65px;
+	margin-left: 160px;
+	padding: 15px;
+	box-shadow: 1px 1px 1px grey;
+	border-radius: 5px;
+	background: white;
 }

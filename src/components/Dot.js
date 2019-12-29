@@ -13,13 +13,11 @@ export default class Dot {
 		});
 		this.position = position;
 		this.color = color;
-		this.dotSize = (id === 0) ? 3 : 2;
+		this.dotSize = 2;
 		this.shape = new Shape.Circle({
 			position: position,
 			radius: this.dotSize,
-			fillColor: (id === 0) ? 'white' : color,
-			strokeWeight: (id === 0) ? 2 : 0,
-			strokeColor: (id === 0) ? color : null
+			fillColor: color
 		});
 
 

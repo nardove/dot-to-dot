@@ -12,6 +12,7 @@ import TimelineIcon from '@material-ui/icons/Timeline';
 import { HuePicker } from 'react-color';
 
 
+
 export default class SketchControls extends Component {
 	constructor(props) {
 		super(props);
@@ -63,11 +64,10 @@ export default class SketchControls extends Component {
 		this.props.deleteAllDots();
 	}
 
-	toggleColourPanel(event) {
+	toggleColourPanel() {
 		// console.log(this.props.currentColour);
 		this.setState({ showPalette: false });
 	}
-
 
 	handleClick(event) {
 		// console.log(event.currentTarget, this.addBtnRef);
@@ -134,13 +134,15 @@ export default class SketchControls extends Component {
 				</Tooltip>
 
 				<Tooltip title='Erase dot' aria-label='Erase dot'>
-					<IconButton
-						disabled={this.state.eraseBtnState}
-						ref={el => (this.eraseBtnRef = el)}
-						onClick={this.handleClick}
-					>
-						<RemoveCircleOutlineIcon />
-					</IconButton>
+					<span>
+						<IconButton
+							disabled={this.state.eraseBtnState}
+							ref={el => (this.eraseBtnRef = el)}
+							onClick={this.handleClick}
+						>
+							<RemoveCircleOutlineIcon />
+						</IconButton>
+					</span>
 				</Tooltip>
 
 				<Tooltip title='Undo last added dot' aria-label='Undo last added dot'>
@@ -177,9 +179,12 @@ export default class SketchControls extends Component {
 					</IconButton>
 				</Tooltip>
 
-				<div className='colour-picker' onMouseLeave={this.toggleColourPanel}>
-					{this.state.showPalette && <HuePicker color={this.props.currentColour} onChange={this.handleColourChange} />}
-				</div>
+				{
+					this.state.showPalette &&
+					<div className='colour-picker' onMouseLeave={this.toggleColourPanel}>
+						<HuePicker color={this.props.currentColour} onChange={this.handleColourChange} />
+					</div>
+				}
 
 				<Tooltip title='Delete all dots' aria-label='Delete all dots'>
 					<IconButton

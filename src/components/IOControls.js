@@ -1,6 +1,5 @@
-import React, {
-	Component
-} from 'react';
+import React, { Component } from 'react';
+import gsap from 'gsap';
 import Tooltip from '@material-ui/core/Tooltip';
 import ImageAdjustmentPanel from './ImageAdjustmentPanel';
 import AboutPanel from './AboutPanel';
@@ -9,7 +8,7 @@ import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
 import TuneIcon from '@material-ui/icons/Tune';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import HelpIcon from '@material-ui/icons/Help';
-
+import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 
 
 
@@ -19,8 +18,17 @@ export default class IOControls extends Component {
 		this.state = {
 			showFileLoader: false,
 			showImageAdjustmentPanel: false,
-			showAboutPanel: false
+			showAboutPanel: false,
+			isLoadingImage: false,
+			isImageLoaded: false
 		};
+		this.preloaderAnimation = gsap.timeline();
+
+		this.preloaderAnimation.to(this.preloader, {
+			duration: 5,
+			rotate: Math.PI,
+			paused: true
+		});
 
 		this.toggleFileLoader = this.toggleFileLoader.bind(this);
 		this.toggleImageAdjustmentPanel = this.toggleImageAdjustmentPanel.bind(this);
@@ -33,18 +41,22 @@ export default class IOControls extends Component {
 		this.fileLoaderRef = React.createRef();
 		this.imageAdjustRef = React.createRef();
 		this.aboutRef = React.createRef();
+		this.preloader = React.createRef();
 	}
 
-	toggleFileLoader(event) {
+	componentDidMount() {
+
+	}
+	toggleFileLoader() {
 		this.setState({ showFileLoader: !this.state.showFileLoader });
 	}
 
-	toggleImageAdjustmentPanel(event) {
-		// console.log('close adjustment panel');
+	toggleImageAdjustmentPanel() {
+		// console.log('adjustment panel: ', event.target.getBoundingClientRect().x);
 		this.setState({ showImageAdjustmentPanel: !this.state.showImageAdjustmentPanel });
 	}
 
-	toggleAboutPanel(event) {
+	toggleAboutPanel() {
 		this.setState({ showAboutPanel: !this.state.showAboutPanel });
 	}
 
@@ -68,7 +80,12 @@ export default class IOControls extends Component {
 
 			const reader = new FileReader();
 			reader.onloadstart = () => {
-				console.log('image loading starter');
+				console.log('image loading started');
+				this.setState({
+					isLoadingImage: true,
+					isImageLoaded: false
+				});
+				this.preloaderAnimation.play();
 			}
 			reader.onprogress = (event) => {
 				let percentLoaded = Math.round((event.loaded / event.total) * 100);
@@ -76,11 +93,15 @@ export default class IOControls extends Component {
 			}
 			reader.onloadend = () => {
 				console.log('image loading completed');
+				this.setState({
+					isLoadingImage: false,
+					isImageLoaded: true
+				});
 			}
 			reader.onload = (event) => {
 				imgtag.src = event.target.result;
 				// Need to add the loaded image to paperjs raster
-				console.log('image loaded');
+				// console.log('image loaded');
 				this.props.addImageToRaster();
 			};
 			reader.readAsDataURL(loadedImage);
@@ -92,22 +113,39 @@ export default class IOControls extends Component {
 
 	render() {
 		return (
-			<div className='io-controls' >
-				<div className='io-controls-holder' >
-					<Tooltip title='Load reference image' aria-label='Load reference image'>
-						<IconButton>
-							<input className='img-btn' type='file' accept='image/*' id='raised-button-file' onChange={this.handleFileLoader} />
-							<label style={{ margin: '0px', padding: '0px', fontSize: '0em' }} htmlFor='raised-button-file'>
-								<AddPhotoAlternateIcon />
-							</label>
+			<div className='io-controls'>
+				<div className='io-controls-holder'>
+					{(this.state.isLoadingImage) ?
+						<IconButton disable='true' style={{ color: 'grey' }}>
+							<HourglassEmptyIcon ref={this.preloader} />
 						</IconButton>
-					</Tooltip>
+						:
+						<Tooltip title='Load reference image' aria-label='Load reference image'>
+							<IconButton>
+								<input className='img-btn' type='file' accept='image/*' id='raised-button-file' onChange={this.handleFileLoader} />
+								<label style={{ margin: '0px', padding: '0px', fontSize: '0em' }} htmlFor='raised-button-file'>
+									<AddPhotoAlternateIcon />
+								</label>
+							</IconButton>
+						</Tooltip>
+					}
 
-					<Tooltip title='Reference image settings' aria-label='Reference image settings'>
-						<IconButton onClick={this.toggleImageAdjustmentPanel}>
-							<TuneIcon />
-						</IconButton>
-					</Tooltip>
+					{(this.state.isImageLoaded) ?
+						<Tooltip title='Reference image settings' aria-label='Reference image settings'>
+							<IconButton onClick={this.toggleImageAdjustmentPanel}>
+								<TuneIcon />
+							</IconButton>
+						</Tooltip>
+						:
+						<Tooltip title='Image settings - No image loaded' aria-label='Image settings - No image loaded'>
+							<span>
+
+								<IconButton disabled='true'>
+									<TuneIcon />
+								</IconButton>
+							</span>
+						</Tooltip>
+					}
 
 					<Tooltip title='Download as PDF' aria-label='Download as PDF'>
 						<IconButton onClick={this.exportDrawing}>
@@ -122,9 +160,16 @@ export default class IOControls extends Component {
 					</Tooltip>
 				</div>
 
-				{this.state.showImageAdjustmentPanel && <ImageAdjustmentPanel adjustImage={this.adjustImage} handleClose={this.toggleImageAdjustmentPanel} />}
+				{this.state.showImageAdjustmentPanel && <ImageAdjustmentPanel
+					handleClose={this.toggleImageAdjustmentPanel}
+					adjustImage={this.adjustImage}
+					imageOpacity={this.props.imageOpacity}
+					imageScale={this.props.imageScale}
+				/>}
 
-				{this.state.showAboutPanel && <AboutPanel handleClose={this.toggleAboutPanel} />}
+				{this.state.showAboutPanel && <AboutPanel
+					handleClose={this.toggleAboutPanel}
+				/>}
 			</div>
 		);
 	}
