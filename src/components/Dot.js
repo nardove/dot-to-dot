@@ -9,7 +9,7 @@ export default class Dot {
 			fontSize: 10,
 			// fontWeight: 'bold',
 			fillColor: color,
-			position: position.subtract(7)
+			position: (position.x < 10 || position.y < 10) ? position.add(7) : position.subtract(7)
 		});
 		this.position = position;
 		this.color = color;

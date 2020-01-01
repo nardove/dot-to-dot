@@ -8,7 +8,6 @@ $font-size: 1em;
 $panel-width: 600px;
 $panel-height: 300px;
 
-
 html,
 body {
 	width: 100%;
@@ -24,6 +23,16 @@ body {
 
 #app {
 	height: 100vh;
+}
+
+.preloader {
+	text-align: center;
+	top: 50%;
+	left: 50%;
+	margin-left: auto;
+	margin-right: auto;
+	position: absolute;
+	transform: translate(-50%, -50%);
 }
 
 .app-logo {

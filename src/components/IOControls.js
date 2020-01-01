@@ -8,8 +8,7 @@ import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
 import TuneIcon from '@material-ui/icons/Tune';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import HelpIcon from '@material-ui/icons/Help';
-import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
-
+import PreloaderLoop from './PreloaderLoop';
 
 
 export default class IOControls extends Component {
@@ -41,12 +40,8 @@ export default class IOControls extends Component {
 		this.fileLoaderRef = React.createRef();
 		this.imageAdjustRef = React.createRef();
 		this.aboutRef = React.createRef();
-		this.preloader = React.createRef();
 	}
 
-	componentDidMount() {
-
-	}
 	toggleFileLoader() {
 		this.setState({ showFileLoader: !this.state.showFileLoader });
 	}
@@ -115,9 +110,10 @@ export default class IOControls extends Component {
 		return (
 			<div className='io-controls'>
 				<div className='io-controls-holder'>
-					{(this.state.isLoadingImage) ?
-						<IconButton disable='true' style={{ color: 'grey' }}>
-							<HourglassEmptyIcon ref={this.preloader} />
+					{(this.state.isLoadingImage)
+						?
+						<IconButton disabled style={{ color: 'grey' }}>
+							<PreloaderLoop style={{ position: 'relative', top: '10px' }} />
 						</IconButton>
 						:
 						<Tooltip title='Load reference image' aria-label='Load reference image'>
@@ -130,7 +126,8 @@ export default class IOControls extends Component {
 						</Tooltip>
 					}
 
-					{(this.state.isImageLoaded) ?
+					{(this.state.isImageLoaded)
+						?
 						<Tooltip title='Reference image settings' aria-label='Reference image settings'>
 							<IconButton onClick={this.toggleImageAdjustmentPanel}>
 								<TuneIcon />
@@ -140,7 +137,7 @@ export default class IOControls extends Component {
 						<Tooltip title='Image settings - No image loaded' aria-label='Image settings - No image loaded'>
 							<span>
 
-								<IconButton disabled='true'>
+								<IconButton disabled>
 									<TuneIcon />
 								</IconButton>
 							</span>
