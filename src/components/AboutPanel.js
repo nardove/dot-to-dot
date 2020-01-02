@@ -11,7 +11,6 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import Link from '@material-ui/core/Link';
 
 
-
 const legendItem = {
 	display: 'flex',
 	alignItems: 'center',
@@ -72,54 +71,6 @@ export default class AboutPanel extends Component {
 					</DialogActions>
 				</Dialog>
 			</Fragment>
-			// <Card>
-			// 	<CardContent>
-			// 		<Typography variant="body1" style={{ whiteSpace: 'pre-line' }}>
-			// 			Thank you for using the app, hope you enjoy it.
-			// 			I've create this app as a way to learn Reactjs, is still a work in progress,
-			// 			I'll try to update and add new functionallity as soon as I can.
-			// 		</Typography>
-
-			// 		<Typography variant='h5'>
-			// 			Legend
-			// 		</Typography>
-
-			// 		<Grid container direction='column' justify='space-evenly' alignItems='center'>
-			// 			<Grid item style={legendItem}>
-			// 				<AddCircleOutlineIcon style={iconItem} />
-			// 				<Typography variant='subtitle2'>Add dot</Typography>
-			// 			</Grid>
-			// 			<Grid item style={legendItem}>
-			// 				<RemoveCircleOutlineIcon style={iconItem} />
-			// 				<Typography variant='subtitle2'>Remove dot</Typography>
-			// 			</Grid>
-			// 			<Grid item style={legendItem}>
-			// 				<UndoIcon style={iconItem} />
-			// 				<Typography variant='subtitle2'>Undo last added dot</Typography>
-			// 			</Grid>
-			// 			<Grid item style={legendItem}>
-			// 				<ColorLensIcon style={iconItem} />
-			// 				<Typography variant='subtitle2'>Change dot tint colour</Typography>
-			// 			</Grid>
-			// 			<Grid item style={legendItem}>
-			// 				<AddPhotoAlternateIcon style={iconItem} />
-			// 				<Typography variant='subtitle2'>Load image/photo reference</Typography>
-			// 			</Grid>
-			// 			<Grid item style={legendItem}>
-			// 				<TuneIcon style={iconItem} />
-			// 				<Typography variant='subtitle2'>Reference image settings</Typography>
-			// 			</Grid>
-			// 			<Grid item style={legendItem}>
-			// 				<GetAppIcon style={iconItem} />
-			// 				<Typography variant='subtitle2'>Download drawing</Typography>
-			// 			</Grid>
-			// 		</Grid>
-			// 	</CardContent>
-
-			// 	<CardActions>
-			// 		<Button size="small" onClick={this.handleClose}>Close</Button>
-			// 	</CardActions>
-			// </Card>
 		);
 	}
 }

@@ -96,7 +96,6 @@ export default class IOControls extends Component {
 			reader.onload = (event) => {
 				imgtag.src = event.target.result;
 				// Need to add the loaded image to paperjs raster
-				// console.log('image loaded');
 				this.props.addImageToRaster();
 			};
 			reader.readAsDataURL(loadedImage);

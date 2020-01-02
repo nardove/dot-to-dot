@@ -77,15 +77,10 @@ export default class Sketch extends Component {
 	componentDidMount() {
 		// Paperjs initialization settings
 		this.canvas = document.getElementById('paper-canvas');
-		// console.log('Paper loaded');
-		// const width = this.canvas.offsetWidth;
-		// const height = this.canvas.offsetHeight - 300;
 		const width = 800;
 		const height = window.innerHeight - 200;
 		this.canvas.width = width;
 		this.canvas.height = height;
-		// this.canvas.style = '800px';
-		// this.canvas.style.height = '600px';
 		this.canvas.style.top = '110px';
 
 		// paperjs initialization
@@ -100,7 +95,6 @@ export default class Sketch extends Component {
 		this.viewRect.strokeColor = 'grey';
 		// this.viewRect.strokeWidth = 0.7;
 		this.viewRect.fillColor = 'white';
-		// console.log(this.viewRect.bounds);
 
 		this.group.position = new Point(
 			window.innerWidth / 2,
@@ -119,7 +113,6 @@ export default class Sketch extends Component {
 		this.path = new Path();
 		this.path.strokeColor = 'black';
 		this.path.visible = this.state.showPath;
-		// this.togglePathVisibility();
 		this.group.addChild(this.path);
 
 		// window.addEventListener('resize', this.handleWindowResize);
@@ -131,12 +124,6 @@ export default class Sketch extends Component {
 		const height = window.innerHeight - 200;
 		this.canvas.width = width;
 		this.canvas.height = height;
-
-		// const centreAlign = new Point(
-		// 	window.innerWidth / 2,
-		// 	window.innerHeight / 2
-		// );
-		// this.group.position = centreAlign;
 	}
 
 	togglePathVisibility() {
@@ -164,8 +151,6 @@ export default class Sketch extends Component {
 	}
 
 	handleMouseClick(event) {
-		// console.log('Add dot enable:', this.state.addDotEnable);
-		// console.log('Erase dot enable:', this.state.eraseDotEnable);
 		if (this.state.addDotEnable) {
 			this.addDot(event);
 		} else if (this.state.eraseDotEnable) {
@@ -182,16 +167,13 @@ export default class Sketch extends Component {
 		// Check if mouse position is too close to the other dots
 		if (this.path.segments.every(segment => segment.point.getDistance(position) >= 10)) {
 			// Creates a new colour that auto change its tint
-			// console.log('before:', this.state.currentColour);
 			const { h, s, l } = this.state.currentColour;
 			const colour = new Color({ hue: h, saturation: s, lightness: l });
-			// colour.hue += 2;
 			(colour.hue >= 359) ? colour.hue = 0 : colour.hue += 2;
 			// Udapte colour after it is been applied
 			this.handleColourChange({ h: colour.hue, s: colour.saturation, l: colour.lightness });
-			// console.log('after:', this.state.currentColour);
 
-			// Creates a new Dot object and store its in an array
+			// Creates a new Dot object and store it in an array
 			const dot = new Dot(this.dot_id, position, colour, this.group);
 			this.dots.push(dot);
 			// Increment dot id number
@@ -202,7 +184,6 @@ export default class Sketch extends Component {
 			this.points.push(position);
 		} else {
 			// Display a message to notify the issue
-			console.log('Too close to the previous point');
 			this.setState({ openSnackbarAddDotState: true });
 		}
 	}
@@ -302,20 +283,16 @@ export default class Sketch extends Component {
 			const height = ratio * width;
 			const xPosition = 5;
 			const yPosition = (doc.internal.pageSize.getHeight() - height) / 2;
-			// doc.addFont('Quicksand-VariableFont/wght.ttf', 'Quicksand', 'Light');
-			// doc.setFont('Quicksand');
-			// doc.addFont('Helvetica');
 			doc.setFontSize(14);
-			// doc.setFontType('bold');
-			doc.text('dot-to-dot', width / 2, 30, { align: 'center' });
+			doc.text('dot-to-dot', width / 2, 40, { align: 'center' });
+			doc.setFontSize(10);
+			doc.text('Connect the dots to solve the puzzle', width / 2, 60, { align: 'center' });
 
 			doc.setFontSize(18);
-			// doc.setFontType('normal');
 			doc.text(this.drawingTitle, width / 2, 60, { maxWidth: 300, align: 'center' });
 			doc.addImage(imgData, 'PNG', xPosition, yPosition, width, height, 'NONE');
 
 			doc.setFontSize(10);
-			// doc.setFontType('normal');
 			doc.text(`Total number of dots: ${this.dots.length}`, width / 2, doc.internal.pageSize.getHeight() - 30, { maxWidth: 300, align: 'center' });
 			doc.save(fileName);
 		});
@@ -327,17 +304,6 @@ export default class Sketch extends Component {
 		}
 		if (this.state.showPath) this.path.visible = true;
 		this.rasterGrp.visible = true;
-
-		// const exportOptions = {
-		// 	bounds: this.viewRect.bounds,
-		// 	asString: false,
-		// };
-		// const svg = paper.project.exportSVG(exportOptions);
-		// const url = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-		// const link = document.createElement('a');
-		// link.download = fileName;
-		// link.href = url;
-		// link.click();
 	}
 
 	updateDrawingTitle(event) {

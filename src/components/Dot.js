@@ -7,7 +7,6 @@ export default class Dot {
 			content: id,
 			justification: 'center',
 			fontSize: 10,
-			// fontWeight: 'bold',
 			fillColor: color,
 			position: (position.x < 10 || position.y < 10) ? position.add(7) : position.subtract(7)
 		});
@@ -19,7 +18,6 @@ export default class Dot {
 			radius: this.dotSize,
 			fillColor: color
 		});
-
 
 		group.addChild(this.id);
 		group.addChild(this.shape);

@@ -65,12 +65,10 @@ export default class SketchControls extends Component {
 	}
 
 	toggleColourPanel() {
-		// console.log(this.props.currentColour);
 		this.setState({ showPalette: false });
 	}
 
 	handleClick(event) {
-		// console.log(event.currentTarget, this.addBtnRef);
 		switch (event.currentTarget) {
 			case this.addBtnRef:
 				console.log('add btn');
@@ -114,7 +112,6 @@ export default class SketchControls extends Component {
 	}
 
 	handleColourChange(colour, event) {
-		// console.log('colour picker hsl:', colour.hsl);
 		this.props.handleColourChange(colour.hsl);
 	}
 
@@ -154,7 +151,6 @@ export default class SketchControls extends Component {
 				</Tooltip>
 
 				<Tooltip title='Show/hide connecting line' aria-label='Show/hide connecting line'>
-					{/* <TimelineIcon /> */}
 					<FormControlLabel
 						control={
 							<Switch

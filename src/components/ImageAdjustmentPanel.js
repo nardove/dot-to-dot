@@ -26,7 +26,6 @@ export default class ImageAdjustmentPanel extends Component {
 	}
 
 	updateRange = name => (event, value) => {
-		// console.log(name, value);
 		const slider = {
 			type: name,
 			value: value
@@ -35,7 +34,6 @@ export default class ImageAdjustmentPanel extends Component {
 	}
 
 	handleClose() {
-		// console.log('close image adjustment panel');
 		this.props.handleClose();
 		this.setState({ open: false });
 	}
