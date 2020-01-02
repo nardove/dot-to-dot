@@ -16,14 +16,14 @@ import Header from './Header';
 import jsPDF from 'jspdf';
 import * as html2canvas from 'html2canvas';
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
 import InputBase from '@material-ui/core/InputBase';
-import { sizing } from '@material-ui/system';
-import CloseIcon from '@material-ui/icons/Close';
 import Snackbar from '@material-ui/core/Snackbar';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
+import Typography from '@material-ui/core/Typography';
 
+const snackText = {
+	fontFamily: 'Quicksand',
+	textAlign: 'center'
+}
 
 export default class Sketch extends Component {
 	constructor(props) {
@@ -34,7 +34,8 @@ export default class Sketch extends Component {
 			showPath: false,
 			currentColour: { h: 0, s: 1, l: 0.5, a: 1 },
 			imageOpacity: 0.5,
-			imageScale: 1
+			imageScale: 1,
+			openSnackbarAddDotState: false
 		};
 
 		// Paperjs objects
@@ -70,6 +71,7 @@ export default class Sketch extends Component {
 		this.handleMouseClick = this.handleMouseClick.bind(this);
 		this.handleWindowResize = this.handleWindowResize.bind(this);
 		this.updateDrawingTitle = this.updateDrawingTitle.bind(this);
+		this.handleAddDotSnackbarClose = this.handleAddDotSnackbarClose.bind(this);
 	}
 
 	componentDidMount() {
@@ -201,6 +203,7 @@ export default class Sketch extends Component {
 		} else {
 			// Display a message to notify the issue
 			console.log('Too close to the previous point');
+			this.setState({ openSnackbarAddDotState: true });
 		}
 	}
 
@@ -349,6 +352,14 @@ export default class Sketch extends Component {
 		// console.log('current colour: ', this.state.currentColour);
 	}
 
+	handleAddDotSnackbarClose = (event, reason) => {
+		if (reason === 'clickaway') {
+			return;
+		}
+		this.setState({ openSnackbarAddDotState: false });
+	}
+
+
 	render() {
 		return (
 			<Fragment>
@@ -400,6 +411,13 @@ export default class Sketch extends Component {
 						/>
 					</Grid>
 				</Grid>
+				<Snackbar
+					anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+					open={this.state.openSnackbarAddDotState}
+					autoHideDuration={3000}
+					onClose={this.handleAddDotSnackbarClose}
+					message={<Typography style={snackText}>Can't add dots too close to each other</Typography>}
+				/>
 			</Fragment>
 		);
 	}
