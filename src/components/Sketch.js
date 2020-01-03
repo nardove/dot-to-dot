@@ -273,8 +273,14 @@ export default class Sketch extends Component {
 			d.shape.radius = 1.3;
 			d.id.fontSize = 7;
 		}
+
 		if (this.state.showPath) this.path.visible = false;
+
+		// Refresh paperjs canvas
 		paper.view.draw();
+
+		// Get a snapshot of the current dot-tod-t drawing
+		// and generate PDF document
 		html2canvas(this.canvas).then((canvas) => {
 			const imgData = canvas.toDataURL('image/png');
 			const doc = new jsPDF('p', 'px', 'a4');
@@ -283,8 +289,10 @@ export default class Sketch extends Component {
 			const height = ratio * width;
 			const xPosition = 5;
 			const yPosition = (doc.internal.pageSize.getHeight() - height) / 2;
+
 			doc.setFontSize(14);
 			doc.text('dot-to-dot', width / 2, 40, { align: 'center' });
+
 			doc.setFontSize(10);
 			doc.text('Connect the dots to solve the puzzle', width / 2, 60, { align: 'center' });
 
@@ -294,6 +302,7 @@ export default class Sketch extends Component {
 
 			doc.setFontSize(10);
 			doc.text(`Total number of dots: ${this.dots.length}`, width / 2, doc.internal.pageSize.getHeight() - 30, { maxWidth: 300, align: 'center' });
+
 			doc.save(fileName);
 		});
 		// After the pdf is created show the raster again
