@@ -24,7 +24,8 @@
     "react": "^16.12.0",
     "react-color": "^2.17.3",
     "react-dom": "^16.12.0",
-    "react-responsive": "^8.0.1"
+    "react-responsive": "^8.0.1",
+    "svg-to-pdfkit": "^0.1.8"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",

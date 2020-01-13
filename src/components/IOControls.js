@@ -47,7 +47,6 @@ export default class IOControls extends Component {
 	}
 
 	toggleImageAdjustmentPanel() {
-		// console.log('adjustment panel: ', event.target.getBoundingClientRect().x);
 		this.setState({ showImageAdjustmentPanel: !this.state.showImageAdjustmentPanel });
 	}
 
@@ -56,7 +55,6 @@ export default class IOControls extends Component {
 	}
 
 	adjustImage(sliderObj) {
-		// console.log(sliderObj);
 		this.props.adjustImageRaster(sliderObj);
 	}
 
@@ -68,14 +66,12 @@ export default class IOControls extends Component {
 	handleFileLoader(event) {
 		// Check for the various File API support.
 		if (window.File && window.FileReader && window.FileList && window.Blob) {
-			// console.log('Load files supported', event.target.files[0]);
 			const loadedImage = event.target.files[0];
 			const imgtag = document.getElementById('paper-img');
 			imgtag.title = loadedImage.name;
 
 			const reader = new FileReader();
 			reader.onloadstart = () => {
-				console.log('image loading started');
 				this.setState({
 					isLoadingImage: true,
 					isImageLoaded: false
@@ -84,10 +80,8 @@ export default class IOControls extends Component {
 			}
 			reader.onprogress = (event) => {
 				let percentLoaded = Math.round((event.loaded / event.total) * 100);
-				console.log('image loading: ', percentLoaded);
 			}
 			reader.onloadend = () => {
-				console.log('image loading completed');
 				this.setState({
 					isLoadingImage: false,
 					isImageLoaded: true

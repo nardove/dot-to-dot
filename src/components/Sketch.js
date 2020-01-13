@@ -1,11 +1,7 @@
-// Experimental web app to create dot-to-dot images
-// Using  Reactjs and Paperjs as drawing engine
-//
-// TODO:
-// - Add a title to the drawing that can be optional
-// - Implement dot colour customization
-// - Work on the Information panel
-// 
+/*	
+Experimental web app to create dot-to-dot images
+Using  Reactjs and Paperjs as drawing engine
+*/
 
 import React, { Component, Fragment } from 'react';
 import paper, { Group, Shape, Point, Path, Color, Raster } from 'paper';
@@ -19,6 +15,8 @@ import Grid from '@material-ui/core/Grid';
 import InputBase from '@material-ui/core/InputBase';
 import Snackbar from '@material-ui/core/Snackbar';
 import Typography from '@material-ui/core/Typography';
+const SVGtoPDF = require('svg-to-pdfkit');
+
 
 const snackText = {
 	fontFamily: 'Quicksand',
@@ -134,16 +132,12 @@ export default class Sketch extends Component {
 
 	toggleAddDot() {
 		this.setState({ addDotEnable: !this.state.addDotEnable });
-		if (this.state.eraseDotEnable) {
-			this.toggleEraseDot();
-		}
+		if (this.state.eraseDotEnable) this.toggleEraseDot();
 	}
 
 	toggleEraseDot() {
 		this.setState({ eraseDotEnable: !this.state.eraseDotEnable });
-		if (this.state.addDotEnable) {
-			this.toggleAddDot();
-		}
+		if (this.state.addDotEnable) this.toggleAddDot();
 	}
 
 	handleUndoDot() {
@@ -198,16 +192,14 @@ export default class Sketch extends Component {
 				this.dots[dotIndex].remove();
 				this.dots.splice(dotIndex, 1);
 				this.updateDotNumbers();
-				// console.log('hit:', dotIndex, this.path.segments.length);
 				return;
 			}
 		});
 	}
 
 	updateDotNumbers() {
-		for (const [i, d] of Array.from(this.dots.entries())) {
-			d.id.content = i;
-		}
+		for (const [i, d] of Array.from(this.dots.entries())) d.id.content = i;
+
 		this.dot_id--;
 	}
 
@@ -219,18 +211,16 @@ export default class Sketch extends Component {
 			removedDot.remove();
 			this.dot_id--;
 		}
-		// console.log('Undo last dot', lastPointIndex);
 	}
 
 	deleteAllDots() {
-		for (const d of this.dots) d.remove(true);
 		this.path.removeSegments();
+		this.dots.forEach(dot => dot.remove(true));
 		this.dots = [];
 		this.dot_id = 0;
 	}
 
 	addImageToRaster() {
-		// console.log('add image to raster');
 		// Check if there is an image already loaded
 		// if so clears the raster addDotEnableState,
 		if (this.raster !== null) {
@@ -262,17 +252,15 @@ export default class Sketch extends Component {
 	}
 
 	exportDrawing() {
-		// console.log('Initializing PDF export');
-
 		const fileName = 'dot-to-dot-drawing.pdf'
 
 		// Before we capture the canvas, first hide the raters object
 		this.rasterGrp.visible = false;
 		this.viewRect.strokeColor = 'white';
-		for (const d of this.dots) {
-			d.shape.radius = 1.3;
-			d.id.fontSize = 7;
-		}
+		this.dots.forEach(dot => {
+			dot.shape.radius = 1.3;
+			dot.id.fontSize = 7;
+		});
 
 		if (this.state.showPath) this.path.visible = false;
 
@@ -307,10 +295,10 @@ export default class Sketch extends Component {
 		});
 		// After the pdf is created show the raster again
 		this.viewRect.strokeColor = 'grey';
-		for (const d of this.dots) {
-			d.shape.radius = 2;
-			d.id.fontSize = 10;
-		}
+		this.dots.forEach(dot => {
+			dot.shape.radius = 2;
+			dot.id.fontSize = 10;
+		});
 		if (this.state.showPath) this.path.visible = true;
 		this.rasterGrp.visible = true;
 	}
@@ -322,15 +310,11 @@ export default class Sketch extends Component {
 	handleFocus = (event) => event.target.select();
 
 	handleColourChange(colour) {
-		// console.log(colour);
 		this.setState({ currentColour: colour });
-		// console.log('current colour: ', this.state.currentColour);
 	}
 
 	handleAddDotSnackbarClose = (event, reason) => {
-		if (reason === 'clickaway') {
-			return;
-		}
+		if (reason === 'clickaway') return;
 		this.setState({ openSnackbarAddDotState: false });
 	}
 

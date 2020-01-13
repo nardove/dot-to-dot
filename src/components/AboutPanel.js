@@ -31,7 +31,6 @@ export default class AboutPanel extends Component {
 
 
 	handleClose() {
-		console.log('close about panel');
 		this.props.handleClose();
 		this.setState({ open: this.state.open = false });
 	}

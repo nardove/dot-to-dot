@@ -71,7 +71,6 @@ export default class SketchControls extends Component {
 	handleClick(event) {
 		switch (event.currentTarget) {
 			case this.addBtnRef:
-				console.log('add btn');
 				this.setState({
 					addBtnState: true,
 					eraseBtnState: false
@@ -79,7 +78,6 @@ export default class SketchControls extends Component {
 				this.toggleAddDot();
 				break;
 			case this.eraseBtnRef:
-				console.log('erase btn');
 				this.setState({
 					addBtnState: false,
 					eraseBtnState: true
@@ -87,18 +85,14 @@ export default class SketchControls extends Component {
 				this.toggleEraseDot();
 				break;
 			case this.pathBtnRef:
-				console.log('path btn');
 				this.togglePathVisiblility();
 				break;
 			case this.colourBtnRef:
-				console.log('colour btn');
-				// this.toggleColourPanel();
 				this.setState({
 					showPalette: true
 				});
 				break;
 			case this.trashBtnRef:
-				console.log('trash btn');
 				this.setState({
 					addBtnState: true,
 					eraseBtnState: false
