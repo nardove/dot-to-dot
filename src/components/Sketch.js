@@ -9,13 +9,13 @@ import Dot from './Dot';
 import SketchControls from './SketchControls';
 import IOControls from './IOControls';
 import Header from './Header';
-import jsPDF from 'jspdf';
-import * as html2canvas from 'html2canvas';
-import Grid from '@material-ui/core/Grid';
 import InputBase from '@material-ui/core/InputBase';
 import Snackbar from '@material-ui/core/Snackbar';
 import Typography from '@material-ui/core/Typography';
-const SVGtoPDF = require('svg-to-pdfkit');
+import * as html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+// const SVGtoPDF = require('svg-to-pdfkit');
+import gsap from 'gsap';
 
 
 const snackText = {
@@ -67,22 +67,21 @@ export default class Sketch extends Component {
 
 		// General functions
 		this.handleMouseClick = this.handleMouseClick.bind(this);
-		this.handleWindowResize = this.handleWindowResize.bind(this);
 		this.updateDrawingTitle = this.updateDrawingTitle.bind(this);
 		this.handleAddDotSnackbarClose = this.handleAddDotSnackbarClose.bind(this);
+		// this.handleWindowResize = this.handleWindowResize.bind(this);
 	}
 
 	componentDidMount() {
 		// Paperjs initialization settings
 		this.canvas = document.getElementById('paper-canvas');
-		const width = 800;
-		const height = window.innerHeight - 200;
+		const sketch = this.canvas.parentNode;
+		const width = sketch.clientWidth;
+		const height = sketch.clientHeight;
 		this.canvas.width = width;
 		this.canvas.height = height;
-		this.canvas.style.top = '110px';
 
 		// paperjs initialization
-		// paper.install(window);
 		paper.setup(this.canvas);
 
 		this.group = new Group();
@@ -95,8 +94,8 @@ export default class Sketch extends Component {
 		this.viewRect.fillColor = 'white';
 
 		this.group.position = new Point(
-			window.innerWidth / 2,
-			window.innerHeight / 2
+			width / 2,
+			height / 2
 		);
 		this.group.addChild(this.viewRect);
 		this.group.addChild(this.rasterGrp);
@@ -113,16 +112,35 @@ export default class Sketch extends Component {
 		this.path.visible = this.state.showPath;
 		this.group.addChild(this.path);
 
+		const tl = gsap.timeline();
+		tl.fromTo(this.headerRef,
+			{ opacity: 0, x: -40 },
+			{ opacity: 1, x: 0, ease: 'power4.in', duration: 0.3, delay: 1 });
+		tl.fromTo(this.ioControlsRef,
+			{ opacity: 0, x: -40 },
+			{ opacity: 1, x: 0, ease: 'elastic.out(1, 0.3)', duration: 0.5 }, '>0.25');
+		tl.fromTo(this.inputBaseRef,
+			{ opacity: 0, y: -20 },
+			{ opacity: 1, y: 0, ease: 'power2.out', duration: 0.2 });
+		tl.fromTo(this.canvasRef,
+			{ opacity: 0 },
+			{ opacity: 1, duration: 1 });
+		tl.fromTo(this.sketchControlsRef,
+			{ opacity: 0, y: 30 },
+			{ opacity: 1, y: 0, ease: 'elastic.out(1, 0.3)', duration: 0.6 });
+
 		// window.addEventListener('resize', this.handleWindowResize);
 	}
 
 	// Setting canvas max-width breaks thes resize eventlistener and makes the method redundant
-	handleWindowResize() {
-		const width = 800;
-		const height = window.innerHeight - 200;
-		this.canvas.width = width;
-		this.canvas.height = height;
-	}
+	// handleWindowResize() {
+	// 	consthis.canvas = document.getElementById('paper-canvas');
+	// 	const sketch = this.canvas.parentNode;
+	// 	const width = sketch.clientWidth;
+	// 	const height = sketch.clientHeight;
+	// 	this.canvas.width = width;
+	// 	this.canvas.height = height;
+	// }
 
 	togglePathVisibility() {
 		this.setState({ showPath: !this.state.showPath }, () => {
@@ -321,55 +339,52 @@ export default class Sketch extends Component {
 
 	render() {
 		return (
-			<Fragment>
+			<div className='wrapper' id='wrapper'>
 				<img id='paper-img' className='paper-img' title='loaded image' />
-				<Grid container direction='column' justify='space-evenly' alignItems='center' style={{ height: '100%' }}>
-					<Grid item style={{ width: '800px' }} >
-						<Grid container direction='row' justify='space-between' alignItems='center'>
-							<Grid item>
-								<Header />
-							</Grid>
-							<Grid item>
-								<IOControls
-									addImageToRaster={this.addImageToRaster}
-									adjustImageRaster={this.adjustImageRaster}
-									exportDrawing={this.exportDrawing}
-									imageOpacity={this.state.imageOpacity}
-									imageScale={this.state.imageScale}
-								/>
-							</Grid>
-						</Grid>
-					</Grid>
 
-					<Grid item style={{ width: '400px' }}>
-						<InputBase
-							defaultValue='Untitled'
-							onChange={this.updateDrawingTitle}
-							onFocus={this.handleFocus}
-							fullWidth={true}
-							inputProps={{ style: { textAlign: 'center', color: '#909090' } }}
-						/>
-					</Grid>
+				<div className='header' ref={div => this.headerRef = div} >
+					<Header />
+				</div>
 
-					<Grid item>
-						<canvas id='paper-canvas' className='paperCanvas' />
-					</Grid>
+				<div className='io-controls' ref={div => this.ioControlsRef = div}>
+					<IOControls
+						addImageToRaster={this.addImageToRaster}
+						adjustImageRaster={this.adjustImageRaster}
+						exportDrawing={this.exportDrawing}
+						imageOpacity={this.state.imageOpacity}
+						imageScale={this.state.imageScale}
+					/>
+				</div>
 
-					<Grid item>
-						<SketchControls
-							currentColour={this.state.currentColour}
-							addDotEnableState={this.state.addDotEnable}
-							eraseDotEnableState={this.state.eraseDotEnable}
-							showPathState={this.state.showPath}
-							handleUndoDot={this.handleUndoDot}
-							toggleAddDot={this.toggleAddDot}
-							toggleEraseDot={this.toggleEraseDot}
-							togglePathVisibility={this.togglePathVisibility}
-							deleteAllDots={this.deleteAllDots}
-							handleColourChange={this.handleColourChange}
-						/>
-					</Grid>
-				</Grid>
+				<div className='sketch-title' ref={div => this.inputBaseRef = div}>
+					<InputBase
+						defaultValue='Untitled'
+						onChange={this.updateDrawingTitle}
+						onFocus={this.handleFocus}
+						fullWidth={true}
+						inputProps={{ style: { textAlign: 'center', color: '#909090' } }}
+					/>
+				</div>
+
+				<div className='sketch-canvas' ref={div => this.canvasRef = div}>
+					<canvas id='paper-canvas' />
+				</div>
+
+				<div className='sketch-controls' ref={div => this.sketchControlsRef = div}>
+					<SketchControls
+						currentColour={this.state.currentColour}
+						addDotEnableState={this.state.addDotEnable}
+						eraseDotEnableState={this.state.eraseDotEnable}
+						showPathState={this.state.showPath}
+						handleUndoDot={this.handleUndoDot}
+						toggleAddDot={this.toggleAddDot}
+						toggleEraseDot={this.toggleEraseDot}
+						togglePathVisibility={this.togglePathVisibility}
+						deleteAllDots={this.deleteAllDots}
+						handleColourChange={this.handleColourChange}
+					/>
+				</div>
+
 				<Snackbar
 					anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
 					open={this.state.openSnackbarAddDotState}
@@ -377,7 +392,7 @@ export default class Sketch extends Component {
 					onClose={this.handleAddDotSnackbarClose}
 					message={<Typography style={snackText}>Can't add dots too close to each other</Typography>}
 				/>
-			</Fragment>
+			</div>
 		);
 	}
 }

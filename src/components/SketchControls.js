@@ -8,9 +8,14 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import ColorLensIcon from '@material-ui/icons/ColorLens';
 import UndoIcon from '@material-ui/icons/Undo';
 import DeleteIcon from '@material-ui/icons/Delete';
-import TimelineIcon from '@material-ui/icons/Timeline';
 import { HuePicker } from 'react-color';
+import Typography from '@material-ui/core/Typography';
 
+
+const th1 = {
+	fontFamily: 'Quicksand',
+	fontSize: '1rem'
+}
 
 
 export default class SketchControls extends Component {
@@ -22,6 +27,8 @@ export default class SketchControls extends Component {
 			eraseBtnState: false,
 			showPalette: false
 		}
+
+		this.colourPickerButtonPositionX = 0;
 
 		this.toggleAddDot = this.toggleAddDot.bind(this);
 		this.toggleEraseDot = this.toggleEraseDot.bind(this);
@@ -88,6 +95,11 @@ export default class SketchControls extends Component {
 				this.togglePathVisiblility();
 				break;
 			case this.colourBtnRef:
+				const parent = document.getElementById('wrapper');
+				const style = window.getComputedStyle(parent, null);
+				const offset = (event.clientX - parseInt(style.marginLeft)) - 170;
+				this.colourPickerButtonPositionX = offset.toString() + 'px';
+
 				this.setState({
 					showPalette: true
 				});
@@ -111,6 +123,7 @@ export default class SketchControls extends Component {
 
 	render() {
 		return (
+			// <div className='sketch-controls'>
 			<Fragment>
 				<Tooltip title='Add dot' aria-label='Add dot'>
 					<span>
@@ -137,11 +150,13 @@ export default class SketchControls extends Component {
 				</Tooltip>
 
 				<Tooltip title='Undo last added dot' aria-label='Undo last added dot'>
-					<IconButton
-						onClick={this.handleUndoDot}
-					>
-						<UndoIcon />
-					</IconButton>
+					<span>
+						<IconButton
+							onClick={this.handleUndoDot}
+						>
+							<UndoIcon />
+						</IconButton>
+					</span>
 				</Tooltip>
 
 				<Tooltip title='Show/hide connecting line' aria-label='Show/hide connecting line'>
@@ -155,36 +170,40 @@ export default class SketchControls extends Component {
 								onChange={this.togglePathVisiblility}
 							/>
 						}
-						label='Preview line'
+						label={<Typography style={th1}>Preview line</Typography>}
 						labelPlacement='start' />
 				</Tooltip>
 
 				<Tooltip title='Change dots colour' aria-label='Change dots colour'>
-					<IconButton
-						style={{ marginLeft: '20px' }}
-						ref={el => (this.colourBtnRef = el)}
-						onClick={this.handleClick}
-					>
-						<ColorLensIcon />
-					</IconButton>
+					<span style={{ marginLeft: '20px' }}>
+						<IconButton
+							ref={el => (this.colourBtnRef = el)}
+							onClick={this.handleClick}
+						>
+							<ColorLensIcon />
+						</IconButton>
+					</span>
 				</Tooltip>
 
 				{
 					this.state.showPalette &&
-					<div className='colour-picker' onMouseLeave={this.toggleColourPanel}>
+					<div className='colour-picker' style={{ marginLeft: this.colourPickerButtonPositionX }} onMouseLeave={this.toggleColourPanel}>
 						<HuePicker color={this.props.currentColour} onChange={this.handleColourChange} />
 					</div>
 				}
 
 				<Tooltip title='Delete all dots' aria-label='Delete all dots'>
-					<IconButton
-						ref={el => (this.trashBtnRef = el)}
-						onClick={this.handleClick}
-					>
-						<DeleteIcon />
-					</IconButton>
+					<span>
+						<IconButton
+							ref={el => (this.trashBtnRef = el)}
+							onClick={this.handleClick}
+						>
+							<DeleteIcon />
+						</IconButton>
+					</span>
 				</Tooltip>
 			</Fragment>
+			// </div>
 		);
 	}
 }

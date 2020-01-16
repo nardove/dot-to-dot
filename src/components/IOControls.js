@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import gsap from 'gsap';
 import Tooltip from '@material-ui/core/Tooltip';
 import ImageAdjustmentPanel from './ImageAdjustmentPanel';
@@ -101,7 +101,8 @@ export default class IOControls extends Component {
 
 	render() {
 		return (
-			<div className='io-controls'>
+			// <div className='io-controls'>
+			<Fragment>
 				<div className='io-controls-holder'>
 					{(this.state.isLoadingImage)
 						?
@@ -110,26 +111,29 @@ export default class IOControls extends Component {
 						</IconButton>
 						:
 						<Tooltip title='Load reference image' aria-label='Load reference image'>
-							<IconButton>
-								<input className='img-btn' type='file' accept='image/*' id='raised-button-file' onChange={this.handleFileLoader} />
-								<label style={{ margin: '0px', padding: '0px', fontSize: '0em' }} htmlFor='raised-button-file'>
-									<AddPhotoAlternateIcon />
-								</label>
-							</IconButton>
+							<span>
+								<IconButton>
+									<input className='img-btn' type='file' accept='image/*' id='raised-button-file' onChange={this.handleFileLoader} />
+									<label style={{ margin: '0px', padding: '0px', fontSize: '0em' }} htmlFor='raised-button-file'>
+										<AddPhotoAlternateIcon />
+									</label>
+								</IconButton>
+							</span>
 						</Tooltip>
 					}
 
 					{(this.state.isImageLoaded)
 						?
 						<Tooltip title='Reference image settings' aria-label='Reference image settings'>
-							<IconButton onClick={this.toggleImageAdjustmentPanel}>
-								<TuneIcon />
-							</IconButton>
+							<span>
+								<IconButton onClick={this.toggleImageAdjustmentPanel}>
+									<TuneIcon />
+								</IconButton>
+							</span>
 						</Tooltip>
 						:
 						<Tooltip title='Image settings - No image loaded' aria-label='Image settings - No image loaded'>
 							<span>
-
 								<IconButton disabled>
 									<TuneIcon />
 								</IconButton>
@@ -138,15 +142,19 @@ export default class IOControls extends Component {
 					}
 
 					<Tooltip title='Download as PDF' aria-label='Download as PDF'>
-						<IconButton onClick={this.exportDrawing}>
-							<GetAppIcon />
-						</IconButton>
+						<span>
+							<IconButton onClick={this.exportDrawing}>
+								<GetAppIcon />
+							</IconButton>
+						</span>
 					</Tooltip>
 
 					<Tooltip title='Help' aria-label='Help'>
-						<IconButton onClick={this.toggleAboutPanel}>
-							<HelpIcon />
-						</IconButton>
+						<span>
+							<IconButton onClick={this.toggleAboutPanel}>
+								<HelpIcon />
+							</IconButton>
+						</span>
 					</Tooltip>
 				</div>
 
@@ -160,7 +168,8 @@ export default class IOControls extends Component {
 				{this.state.showAboutPanel && <AboutPanel
 					handleClose={this.toggleAboutPanel}
 				/>}
-			</div>
+			</Fragment>
+			// </div>
 		);
 	}
 }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import appIcon from '../assets/dot-to-dot-icon.svg';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 const th1 = {
@@ -18,19 +17,21 @@ const th2 = {
 export default class Header extends Component {
 	render() {
 		return (
-			<Grid container direction='row' justify='flex-start' alignItems='flex-start'>
-				<Grid item>
+			// <div className='header'>
+			<div className='header-wrapper'>
+				<div className='header-wrapper-logo'>
 					<img className='app-logo' src={appIcon} alt='App Logo' title='App Logo' />
-				</Grid>
-				<Grid item>
+				</div>
+				<div className='header-wrapper-title'>
 					<Typography variant='h1' style={th1}>
 						dot-to-dot
-					</Typography>
+						</Typography>
 					<Typography variant='h2' style={th2}>
 						Create and share your own dot to dot puzzles
-					</Typography>
-				</Grid>
-			</Grid>
+						</Typography>
+				</div>
+			</div>
+			// </div>
 		);
 	}
 }

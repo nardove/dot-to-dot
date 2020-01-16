@@ -4,7 +4,6 @@ import gsap from 'gsap';
 
 
 export default class PreloaderLoop extends Component {
-
 	componentDidMount() {
 		gsap.to(this.hourglass, {
 			duration: 1,

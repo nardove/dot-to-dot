@@ -4,6 +4,11 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 
+const th1 = {
+	fontFamily: 'Quicksand',
+	fontSize: '1.5rem'
+}
+
 const slider = {
 	color: '#000000'
 }
@@ -47,7 +52,7 @@ export default class ImageAdjustmentPanel extends Component {
 			<div className='io-panel' onMouseLeave={this.handleClose}>
 				<Card>
 					<CardContent>
-						<Typography variant='button' display='block'>
+						<Typography variant='h3' style={th1}>
 							Image adjustment
 						</Typography>
 

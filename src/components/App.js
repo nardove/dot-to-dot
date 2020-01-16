@@ -18,6 +18,7 @@ export default class App extends Component {
 				<MediaQuery minDeviceWidth={1030}>
 					<Sketch />
 				</MediaQuery>
+
 				<MediaQuery maxDeviceWidth={1024}>
 					<div className='preloader'>
 						<p>

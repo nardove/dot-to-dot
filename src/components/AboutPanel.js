@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -10,6 +9,10 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import Link from '@material-ui/core/Link';
 
+const th1 = {
+	fontFamily: 'Quicksand',
+	fontSize: '2.5rem'
+}
 
 const legendItem = {
 	display: 'flex',
@@ -44,7 +47,7 @@ export default class AboutPanel extends Component {
 					aria-labelledby="max-width-dialog-title"
 				>
 					<DialogTitle id="max-width-dialog-title">
-						<Typography>
+						<Typography variant='h4' style={th1}>
 							About
 						</Typography>
 					</DialogTitle>
