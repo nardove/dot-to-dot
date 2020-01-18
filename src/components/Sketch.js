@@ -12,9 +12,10 @@ import Header from './Header';
 import InputBase from '@material-ui/core/InputBase';
 import Snackbar from '@material-ui/core/Snackbar';
 import Typography from '@material-ui/core/Typography';
-import * as html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-// const SVGtoPDF = require('svg-to-pdfkit');
+const SVGtoPDF = require('svg-to-pdfkit');
+const PDFDocument = require('svg-to-pdfkit/examples/pdfkit');
+const blobStream = require('blob-stream');
+import FileSaver from 'file-saver';
 import gsap from 'gsap';
 
 
@@ -279,38 +280,62 @@ export default class Sketch extends Component {
 			dot.shape.radius = 1.3;
 			dot.id.fontSize = 7;
 		});
-
 		if (this.state.showPath) this.path.visible = false;
 
 		// Refresh paperjs canvas
 		paper.view.draw();
 
-		// Get a snapshot of the current dot-tod-t drawing
-		// and generate PDF document
-		html2canvas(this.canvas).then((canvas) => {
-			const imgData = canvas.toDataURL('image/png');
-			const doc = new jsPDF('p', 'px', 'a4');
-			const ratio = this.canvas.offsetHeight / this.canvas.offsetWidth;
-			const width = doc.internal.pageSize.getWidth() - 10;
-			const height = ratio * width;
-			const xPosition = 5;
-			const yPosition = (doc.internal.pageSize.getHeight() - height) / 2;
+		const docPageSize = {
+			width: 596,
+			height: 842
+		};
 
-			doc.setFontSize(14);
-			doc.text('dot-to-dot', width / 2, 40, { align: 'center' });
+		const docTextOptions = {
+			width: docPageSize.width,
+			align: 'center'
+		};
 
-			doc.setFontSize(10);
-			doc.text('Connect the dots to solve the puzzle', width / 2, 60, { align: 'center' });
+		const ratio = this.canvas.offsetHeight / this.canvas.offsetWidth;
+		const margin = 10;
+		const svgOptions = {
+			// https://github.com/alafr/SVG-to-PDFKit/issues/24
+			width: parseFloat(docPageSize.width - margin),
+			height: parseFloat(ratio * docPageSize.width - margin),
+			preserveAspectRatio: '1:1'
+		};
 
-			doc.setFontSize(18);
-			doc.text(this.drawingTitle, width / 2, 60, { maxWidth: 300, align: 'center' });
-			doc.addImage(imgData, 'PNG', xPosition, yPosition, width, height, 'NONE');
+		const svg = paper.project.exportSVG({ asString: false });
+		svg.setAttribute('width', '100%');
 
-			doc.setFontSize(10);
-			doc.text(`Total number of dots: ${this.dots.length}`, width / 2, doc.internal.pageSize.getHeight() - 30, { maxWidth: 300, align: 'center' });
-
-			doc.save(fileName);
+		const doc = new PDFDocument({
+			size: [docPageSize.width, docPageSize.height],
+			// size: 'A7',
+			margins: {
+				top: 0,
+				bottom: 0,
+				left: 0,
+				right: 0
+			},
 		});
+		const stream = doc.pipe(blobStream());
+		doc.fontSize(14);
+		doc.text('dot-to-dot', 0, 10, docTextOptions);
+		doc.moveDown();
+		doc.fontSize(10);
+		doc.text('Connect the dots to solve the puzzle', docTextOptions);
+		doc.moveDown();
+		doc.text(this.drawingTitle, docTextOptions);
+
+		SVGtoPDF(doc, svg, margin / 2, 100, svgOptions);
+
+		doc.text(`Total number of dots: ${this.dots.length}`, 0, docPageSize.height - 20, docTextOptions);
+		doc.end();
+
+		stream.on('finish', function () {
+			const blob = stream.toBlob('application/pdf');
+			FileSaver.saveAs(blob, 'dot-to-dot.pdf');
+		});
+
 		// After the pdf is created show the raster again
 		this.viewRect.strokeColor = 'grey';
 		this.dots.forEach(dot => {
