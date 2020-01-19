@@ -12,17 +12,17 @@ import Header from './Header';
 import InputBase from '@material-ui/core/InputBase';
 import Snackbar from '@material-ui/core/Snackbar';
 import Typography from '@material-ui/core/Typography';
+import gsap from 'gsap';
+import FileSaver from 'file-saver';
 const SVGtoPDF = require('svg-to-pdfkit');
 const PDFDocument = require('svg-to-pdfkit/examples/pdfkit');
 const blobStream = require('blob-stream');
-import FileSaver from 'file-saver';
-import gsap from 'gsap';
-
+import appIcon from '../assets/dot-to-dot-icon.svg';
 
 const snackText = {
 	fontFamily: 'Quicksand',
 	textAlign: 'center'
-}
+};
 
 export default class Sketch extends Component {
 	constructor(props) {
@@ -48,6 +48,7 @@ export default class Sketch extends Component {
 		this.rasterGrp;
 		this.viewRect;
 		this.drawingTitle = '';
+		this.logoSvgData = '';
 
 		// SketchControl functions
 		this.togglePathVisibility = this.togglePathVisibility.bind(this);
@@ -94,16 +95,13 @@ export default class Sketch extends Component {
 		// this.viewRect.strokeWidth = 0.7;
 		this.viewRect.fillColor = 'white';
 
-		this.group.position = new Point(
-			width / 2,
-			height / 2
-		);
+		this.group.position = new Point(width / 2, height / 2);
 		this.group.addChild(this.viewRect);
 		this.group.addChild(this.rasterGrp);
 
 		// Adds Mouse event to group
 		// allows for a better control as of where the user draw
-		this.group.onMouseDown = event => {
+		this.group.onMouseDown = (event) => {
 			this.handleMouseClick(event);
 		};
 
@@ -114,21 +112,35 @@ export default class Sketch extends Component {
 		this.group.addChild(this.path);
 
 		const tl = gsap.timeline();
-		tl.fromTo(this.headerRef,
+		tl.fromTo(
+			this.headerRef,
 			{ opacity: 0, x: -40 },
-			{ opacity: 1, x: 0, ease: 'power4.in', duration: 0.3, delay: 1 });
-		tl.fromTo(this.ioControlsRef,
+			{ opacity: 1, x: 0, ease: 'power4.in', duration: 0.3, delay: 1 }
+		);
+		tl.fromTo(
+			this.ioControlsRef,
 			{ opacity: 0, x: -40 },
-			{ opacity: 1, x: 0, ease: 'elastic.out(1, 0.3)', duration: 0.5 }, '>0.25');
-		tl.fromTo(this.inputBaseRef,
+			{ opacity: 1, x: 0, ease: 'elastic.out(1, 0.3)', duration: 0.5 },
+			'>0.25'
+		);
+		tl.fromTo(
+			this.inputBaseRef,
 			{ opacity: 0, y: -20 },
-			{ opacity: 1, y: 0, ease: 'power2.out', duration: 0.2 });
-		tl.fromTo(this.canvasRef,
-			{ opacity: 0 },
-			{ opacity: 1, duration: 1 });
-		tl.fromTo(this.sketchControlsRef,
+			{ opacity: 1, y: 0, ease: 'power2.out', duration: 0.2 }
+		);
+		tl.fromTo(this.canvasRef, { opacity: 0 }, { opacity: 1, duration: 1 });
+		tl.fromTo(
+			this.sketchControlsRef,
 			{ opacity: 0, y: 30 },
-			{ opacity: 1, y: 0, ease: 'elastic.out(1, 0.3)', duration: 0.6 });
+			{ opacity: 1, y: 0, ease: 'elastic.out(1, 0.3)', duration: 0.6 }
+		);
+
+		// Get
+		fetch(appIcon)
+			.then((res) => res.text())
+			.then((svg) => {
+				this.logoSvgData = svg;
+			});
 
 		// window.addEventListener('resize', this.handleWindowResize);
 	}
@@ -178,11 +190,11 @@ export default class Sketch extends Component {
 		const position = event.point;
 
 		// Check if mouse position is too close to the other dots
-		if (this.path.segments.every(segment => segment.point.getDistance(position) >= 10)) {
+		if (this.path.segments.every((segment) => segment.point.getDistance(position) >= 10)) {
 			// Creates a new colour that auto change its tint
 			const { h, s, l } = this.state.currentColour;
 			const colour = new Color({ hue: h, saturation: s, lightness: l });
-			(colour.hue >= 359) ? colour.hue = 0 : colour.hue += 2;
+			colour.hue >= 359 ? (colour.hue = 0) : (colour.hue += 2);
 			// Udapte colour after it is been applied
 			this.handleColourChange({ h: colour.hue, s: colour.saturation, l: colour.lightness });
 
@@ -203,7 +215,7 @@ export default class Sketch extends Component {
 
 	eraseDot(event) {
 		const point = event.point;
-		this.dots.some(dot => {
+		this.dots.some((dot) => {
 			const hit = dot.shape.hitTest(point, { fill: true, tolerance: 5 });
 			if (hit != null) {
 				const dotIndex = parseInt(dot.id.content);
@@ -234,7 +246,7 @@ export default class Sketch extends Component {
 
 	deleteAllDots() {
 		this.path.removeSegments();
-		this.dots.forEach(dot => dot.remove(true));
+		this.dots.forEach((dot) => dot.remove(true));
 		this.dots = [];
 		this.dot_id = 0;
 	}
@@ -248,10 +260,7 @@ export default class Sketch extends Component {
 		}
 		// otherwise adds the new loaded image
 		this.raster = new Raster('paper-img');
-		this.raster.position = new Point(
-			this.canvas.offsetWidth / 2,
-			this.canvas.offsetHeight / 2
-		);
+		this.raster.position = new Point(this.canvas.offsetWidth / 2, this.canvas.offsetHeight / 2);
 		this.rasterGrp.opacity = this.state.imageOpacity;
 		this.rasterGrp.addChild(this.raster);
 	}
@@ -271,12 +280,10 @@ export default class Sketch extends Component {
 	}
 
 	exportDrawing() {
-		const fileName = 'dot-to-dot-drawing.pdf'
-
 		// Before we capture the canvas, first hide the raters object
 		this.rasterGrp.visible = false;
 		this.viewRect.strokeColor = 'white';
-		this.dots.forEach(dot => {
+		this.dots.forEach((dot) => {
 			dot.shape.radius = 1.3;
 			dot.id.fontSize = 7;
 		});
@@ -297,15 +304,15 @@ export default class Sketch extends Component {
 
 		const ratio = this.canvas.offsetHeight / this.canvas.offsetWidth;
 		const margin = 10;
-		const svgOptions = {
+		const sketchSvgOptions = {
 			// https://github.com/alafr/SVG-to-PDFKit/issues/24
 			width: parseFloat(docPageSize.width - margin),
-			height: parseFloat(ratio * docPageSize.width - margin),
-			preserveAspectRatio: '1:1'
+			height: parseFloat(ratio * docPageSize.width - margin)
+			// preserveAspectRatio: '1:1'
 		};
 
-		const svg = paper.project.exportSVG({ asString: false });
-		svg.setAttribute('width', '100%');
+		const sketchSvgData = paper.project.exportSVG({ asString: false });
+		sketchSvgData.setAttribute('width', '100%');
 
 		const doc = new PDFDocument({
 			size: [docPageSize.width, docPageSize.height],
@@ -315,30 +322,42 @@ export default class Sketch extends Component {
 				bottom: 0,
 				left: 0,
 				right: 0
-			},
+			}
 		});
 		const stream = doc.pipe(blobStream());
+
+		SVGtoPDF(doc, this.logoSvgData, 250, 15, { width: 100, height: 50 });
+
+		doc.font('Helvetica');
 		doc.fontSize(14);
-		doc.text('dot-to-dot', 0, 10, docTextOptions);
-		doc.moveDown();
+		doc.text('dot-to-dot', 0, 80, docTextOptions);
 		doc.fontSize(10);
+		doc.moveDown();
 		doc.text('Connect the dots to solve the puzzle', docTextOptions);
 		doc.moveDown();
+		doc.moveDown();
+		doc.fontSize(14);
 		doc.text(this.drawingTitle, docTextOptions);
 
-		SVGtoPDF(doc, svg, margin / 2, 100, svgOptions);
+		SVGtoPDF(doc, sketchSvgData, margin / 2, 150, sketchSvgOptions);
 
-		doc.text(`Total number of dots: ${this.dots.length}`, 0, docPageSize.height - 20, docTextOptions);
+		doc.fontSize(10);
+		doc.text(
+			`Total number of dots: ${this.dots.length}`,
+			0,
+			docPageSize.height - 25,
+			docTextOptions
+		);
 		doc.end();
 
-		stream.on('finish', function () {
+		stream.on('finish', function() {
 			const blob = stream.toBlob('application/pdf');
 			FileSaver.saveAs(blob, 'dot-to-dot.pdf');
 		});
 
 		// After the pdf is created show the raster again
 		this.viewRect.strokeColor = 'grey';
-		this.dots.forEach(dot => {
+		this.dots.forEach((dot) => {
 			dot.shape.radius = 2;
 			dot.id.fontSize = 10;
 		});
@@ -359,19 +378,18 @@ export default class Sketch extends Component {
 	handleAddDotSnackbarClose = (event, reason) => {
 		if (reason === 'clickaway') return;
 		this.setState({ openSnackbarAddDotState: false });
-	}
-
+	};
 
 	render() {
 		return (
 			<div className='wrapper' id='wrapper'>
 				<img id='paper-img' className='paper-img' title='loaded image' />
 
-				<div className='header' ref={div => this.headerRef = div} >
+				<div className='header' ref={(div) => (this.headerRef = div)}>
 					<Header />
 				</div>
 
-				<div className='io-controls' ref={div => this.ioControlsRef = div}>
+				<div className='io-controls' ref={(div) => (this.ioControlsRef = div)}>
 					<IOControls
 						addImageToRaster={this.addImageToRaster}
 						adjustImageRaster={this.adjustImageRaster}
@@ -381,7 +399,7 @@ export default class Sketch extends Component {
 					/>
 				</div>
 
-				<div className='sketch-title' ref={div => this.inputBaseRef = div}>
+				<div className='sketch-title' ref={(div) => (this.inputBaseRef = div)}>
 					<InputBase
 						defaultValue='Untitled'
 						onChange={this.updateDrawingTitle}
@@ -391,11 +409,11 @@ export default class Sketch extends Component {
 					/>
 				</div>
 
-				<div className='sketch-canvas' ref={div => this.canvasRef = div}>
+				<div className='sketch-canvas' ref={(div) => (this.canvasRef = div)}>
 					<canvas id='paper-canvas' />
 				</div>
 
-				<div className='sketch-controls' ref={div => this.sketchControlsRef = div}>
+				<div className='sketch-controls' ref={(div) => (this.sketchControlsRef = div)}>
 					<SketchControls
 						currentColour={this.state.currentColour}
 						addDotEnableState={this.state.addDotEnable}
@@ -415,7 +433,11 @@ export default class Sketch extends Component {
 					open={this.state.openSnackbarAddDotState}
 					autoHideDuration={3000}
 					onClose={this.handleAddDotSnackbarClose}
-					message={<Typography style={snackText}>Can't add dots too close to each other</Typography>}
+					message={
+						<Typography style={snackText}>
+							Can't add dots too close to each other
+						</Typography>
+					}
 				/>
 			</div>
 		);

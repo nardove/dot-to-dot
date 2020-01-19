@@ -20,7 +20,7 @@ export default class Header extends Component {
 			// <div className='header'>
 			<div className='header-wrapper'>
 				<div className='header-wrapper-logo'>
-					<img className='app-logo' src={appIcon} alt='App Logo' title='App Logo' />
+					<img id='app-logo' className='app-logo' src={appIcon} alt='App Logo' title='App Logo' />
 				</div>
 				<div className='header-wrapper-title'>
 					<Typography variant='h1' style={th1}>
