@@ -17,7 +17,6 @@ import FileSaver from 'file-saver';
 const SVGtoPDF = require('svg-to-pdfkit');
 const PDFDocument = require('svg-to-pdfkit/examples/pdfkit');
 const blobStream = require('blob-stream');
-import appIcon from '../assets/dot-to-dot-icon.svg';
 
 const snackText = {
 	fontFamily: 'Quicksand',
@@ -121,7 +120,7 @@ export default class Sketch extends Component {
 			this.ioControlsRef,
 			{ opacity: 0, x: -40 },
 			{ opacity: 1, x: 0, ease: 'elastic.out(1, 0.3)', duration: 0.5 },
-			'>0.25'
+			'<0.35'
 		);
 		tl.fromTo(
 			this.inputBaseRef,
@@ -134,13 +133,6 @@ export default class Sketch extends Component {
 			{ opacity: 0, y: 30 },
 			{ opacity: 1, y: 0, ease: 'elastic.out(1, 0.3)', duration: 0.6 }
 		);
-
-		// Get
-		fetch(appIcon)
-			.then((res) => res.text())
-			.then((svg) => {
-				this.logoSvgData = svg;
-			});
 
 		// window.addEventListener('resize', this.handleWindowResize);
 	}
@@ -284,8 +276,8 @@ export default class Sketch extends Component {
 		this.rasterGrp.visible = false;
 		this.viewRect.strokeColor = 'white';
 		this.dots.forEach((dot) => {
-			dot.shape.radius = 1.3;
-			dot.id.fontSize = 7;
+			dot.shape.radius = 1.5;
+			dot.id.fontSize = 8;
 		});
 		if (this.state.showPath) this.path.visible = false;
 
@@ -314,6 +306,10 @@ export default class Sketch extends Component {
 		const sketchSvgData = paper.project.exportSVG({ asString: false });
 		sketchSvgData.setAttribute('width', '100%');
 
+		const appLogo = document.getElementById('app-logo');
+		const appLogoSrc = appLogo.getSVGDocument().getElementById('Layer 0');
+		appLogoSrc.setAttribute('width', '100%');
+
 		const doc = new PDFDocument({
 			size: [docPageSize.width, docPageSize.height],
 			// size: 'A7',
@@ -326,7 +322,7 @@ export default class Sketch extends Component {
 		});
 		const stream = doc.pipe(blobStream());
 
-		SVGtoPDF(doc, this.logoSvgData, 250, 15, { width: 100, height: 50 });
+		SVGtoPDF(doc, appLogoSrc, 250, 15, { width: 100, height: 50 });
 
 		doc.font('Helvetica');
 		doc.fontSize(14);

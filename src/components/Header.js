@@ -6,13 +6,13 @@ const th1 = {
 	fontFamily: 'Quicksand',
 	textAlign: 'left',
 	fontSize: '2.5rem'
-}
+};
 
 const th2 = {
 	fontFamily: 'Quicksand',
 	textAlign: 'left',
 	fontSize: '1.25rem'
-}
+};
 
 export default class Header extends Component {
 	render() {
@@ -20,15 +20,20 @@ export default class Header extends Component {
 			// <div className='header'>
 			<div className='header-wrapper'>
 				<div className='header-wrapper-logo'>
-					<img id='app-logo' className='app-logo' src={appIcon} alt='App Logo' title='App Logo' />
+					{/* <img id='app-logo' className='app-logo' src={appIcon} alt='App Logo' title='App Logo' /> */}
+					<object
+						id='app-logo'
+						className='app-logo'
+						data={appIcon}
+						type='image/svg+xml'></object>
 				</div>
 				<div className='header-wrapper-title'>
 					<Typography variant='h1' style={th1}>
 						dot-to-dot
-						</Typography>
+					</Typography>
 					<Typography variant='h2' style={th2}>
 						Create and share your own dot to dot puzzles
-						</Typography>
+					</Typography>
 				</div>
 			</div>
 			// </div>
