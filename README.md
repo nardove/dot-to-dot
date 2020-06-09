@@ -16,4 +16,6 @@ If you want to chip in to the project, clone and npm install all the packages to
 -   GSAP for animations
 -   Sass for styling
 
-<img src="https://github.com/nardove/dot-to-dot/blob/master/app-assets/dot-to-dot-screenshot.png?raw=true" width=500>
+---
+
+<img src="https://github.com/nardove/dot-to-dot/blob/master/app-assets/app-screenshot.png?raw=true" width=500>
