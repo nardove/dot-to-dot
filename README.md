@@ -11,7 +11,7 @@ If you want to chip in to the project, clone and npm install all the packages to
 **Stack**
 
 -   Reactjs
--   MaterialUL for UI components
+-   MaterialUI for UI components
 -   Paperjs to control dots rendering
 -   GSAP for animations
 -   Sass for styling
